@@ -1,0 +1,4 @@
+ssh_user=root
+ssh_server=127.0.0.1
+ssh_port=22
+ssh_directory="/var/www/html/"

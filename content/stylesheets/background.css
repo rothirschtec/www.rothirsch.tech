@@ -1,0 +1,62 @@
+
+/* Background */
+@media screen
+  and (orientation: portrait) {
+    .light-color .rothirsch_bg {
+      background: url(images/Background_Portrait_Rothirsch-Tech_GmbH_light-mode.png) no-repeat 20% 100% fixed;
+    	-webkit-background-size: cover;
+    	-moz-background-size: cover;
+    	-o-background-size: cover;
+    	background-size: cover;
+    }
+    .dark-color .rothirsch_bg {
+      background: url(images/Background_Portrait_Rothirsch-Tech_GmbH_dark-mode.png) no-repeat 20% 100% fixed;
+    	-webkit-background-size: cover;
+    	-moz-background-size: cover;
+    	-o-background-size: cover;
+    	background-size: cover;
+    }
+    .rothirsch_bg {
+    	position:fixed;
+    	display:block;
+    	left:0; top:0;
+    	overflow:hidden;
+    	height:100%;
+    	min-width:100%; min-height:100%;
+    }
+}
+@media screen
+  and (orientation: landscape) {
+    .light-color .rothirsch_bg {
+      background: url(images/Background_Landscape_Rothirsch-Tech_GmbH_light-mode.png) no-repeat center bottom fixed;
+    	-webkit-background-size: cover;
+    	-moz-background-size: cover;
+    	-o-background-size: cover;
+    	background-size: cover;
+    }
+    .dark-color .rothirsch_bg {
+      background: url(images/Background_Landscape_Rothirsch-Tech_GmbH_dark-mode.png) no-repeat center bottom fixed;
+    	-webkit-background-size: cover;
+    	-moz-background-size: cover;
+    	-o-background-size: cover;
+    	background-size: cover;
+    }
+    .rothirsch_bg {
+    	position:fixed;
+    	display:block;
+    	left:0px; top:0;
+    	overflow:hidden;
+    	height:100%;
+    	min-width:100%; min-height:100%;
+    }
+}
+.rothirsch_bg_layer
+{
+    portrait:fixed;
+    left:0; top:0;
+    height:100%!important; width:100%!important;
+
+    display: inline-block;
+    vertical-align: middle;
+    overflow: hidden;
+}

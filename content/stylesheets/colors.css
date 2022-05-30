@@ -1,0 +1,302 @@
+
+h1 {
+    /*color:#7c0a02;*/
+    color:#c2021c;
+}
+.heading2 {
+	background-color: #ce2939;
+}
+
+/* Light and dark mode */
+.light-color h2
+{
+    border-bottom:1px solid rgba(0,0,0,0.1);
+}
+.dark-color h2
+{
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.light-color h2,
+.light-color h3
+{
+  color:#18191a;
+}
+.dark-color h2,
+.dark-color h3
+{
+  color:#fbfbfb;
+}
+.light-color p,
+.light-color li,
+.light-color.special_menu
+{
+  color:#18191a;
+}
+.light-color.special_menu:hover
+{
+  color:green!important;
+}
+.dark-color p,
+.dark-color li,
+.dark-color.special_menu
+{
+  color:#fbfbfb;
+}
+.dark-color.special_menu:hover
+{
+  color:pink!important;
+}
+.light-color a,
+.light-color a:hover
+{
+  color:092834;
+}
+.dark-color a,
+.dark-color a:hover
+{
+  color:lightblue;
+}
+body.light-color
+{
+  /*background-color:#fbfbfb;*/
+  background-color:white;
+}
+body.dark-color
+{
+  background-color:#18191a;
+}
+div.no-cookies-message {
+  background-color:#18191a;
+}
+div.no-cookies-message p {
+  color:#fbfbfb;
+}
+
+.dot.light-color {
+  background-color: #18191a;
+}
+.dot.dark-color {
+  background-color: white;
+}
+.dot {
+  height: 20px;
+  width: 20px;
+  background-color: #18191a;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.birds-heading2 {
+  background-color:#c2021c;
+  color: #fbfbfb;
+}
+
+@media screen
+  and (orientation: landscape) {
+
+  .navbar {
+    background-color: transparent;
+  }
+
+}
+@media screen
+  and (orientation: portrait) {
+
+  .light-color.special_menu
+  {
+    color:#fbfbfb;
+  }
+  .light-color.special_menu:hover
+  {
+    color:green;
+  }
+  .dark-color.special_menu
+  {
+    color:#fbfbfb;
+  }
+  .dark-color.special_menu:hover
+  {
+    color:pink;
+  }
+
+}
+
+/*************** MAIN  ***************/
+
+.light-color .single-page {
+
+  background-color:rgba(220,220,220,0.0);
+  border-color:rgba(194, 2, 28, 0.3);
+
+  -webkit-box-shadow: -1px -2px 8px -6px #000000;
+  -moz-box-shadow: -1px -2px 8px -6px #000000;
+  box-shadow: -1px -2px 8px -6px #000000;
+
+}
+.light-color .single-page.active_article {
+
+  background-color:rgba(220,220,220,0.4);
+
+}
+.light-color .single-page:hover {
+
+  background-color:rgba(200,200,200,0.0);
+  border-color:rgba(194, 2, 28, 0.3);
+
+  -webkit-box-shadow: 1px -0px 10px -4px #000000;
+  -moz-box-shadow: 1px -0px 10px -4px #000000;
+  box-shadow: 1px -0px 10px -4px #000000;
+
+}
+.light-color .single-page.active_article:hover {
+
+  background-color:rgba(220,220,220,0.6);
+
+}
+
+.dark-color .single-page {
+
+  background-color:rgba(10, 10, 10, 0.3);
+  border-color:rgba(194, 2, 28, 0.3);
+
+  -webkit-box-shadow: -1px -2px 8px -6px #333;
+  -moz-box-shadow: -1px -2px 8px -6px #333;
+  box-shadow: -1px -2px 8px -6px #333;
+
+}
+.dark-color .single-page.active_article {
+
+  background-color:rgba(10, 10, 10, 0.9);
+
+}
+.dark-color .single-page:hover {
+
+  background-color:rgba(200,200,200,0.0);
+  border-color:rgba(194, 2, 28, 0.3);
+
+  -webkit-box-shadow: 1px -0px 10px -4px #fbfbfb;
+  -moz-box-shadow: 1px -0px 10px -4px #fbfbfb;
+  box-shadow: 1px -0px 10px -4px #fbfbfb;
+
+}
+.dark-color .single-page.active_article:hover {
+
+  background-color:rgba(5, 5, 5, 1.0);
+
+}
+
+.single-pageClicked {
+    background-color:rgba(194, 2, 28, 0.1);
+}
+
+.blink {
+    background-color:rgba(255,255,255,0.95);
+}
+.single-pageClicked {
+    background-color:rgba(194, 2, 28, 0.1);
+}
+.single-page:hover {
+    -webkit-box-shadow: -1px -2px 8px -6px #000000;
+    -moz-box-shadow: -1px -2px 8px -6px #000000;
+    box-shadow: -1px -2px 8px -6px #000000;
+}
+
+
+/*************** SCROLLBAR BASE CSS ***************/
+
+
+/*************** SCROLLBAR BASE CSS ***************/
+
+.scroll-wrapper {
+        overflow: hidden ;
+            padding: 0 ;
+                position: relative;
+
+}
+
+.scroll-wrapper > .scroll-content {
+        border: none ;
+            box-sizing: content-box ;
+                height: auto;
+                    left: 0;
+                        margin: 0;
+                            max-height: none;
+                                max-width: none ;
+                                    overflow: scroll ;
+                                        padding: 0;
+                                            position: relative ;
+                                                top: 0;
+                                                    width: auto ;
+
+}
+
+.scroll-wrapper > .scroll-content::-webkit-scrollbar {
+        height: 0;
+            width: 0;
+
+}
+
+.scroll-element {
+        display: none;
+
+}
+.scroll-element, .scroll-element div {
+        box-sizing: content-box;
+
+}
+
+.scroll-element.scroll-x.scroll-scrollx_visible,
+.scroll-element.scroll-y.scroll-scrolly_visible {
+        display: block;
+
+}
+
+.scroll-element .scroll-bar,
+.scroll-element .scroll-arrow {
+        cursor: default;
+
+}
+
+.scroll-textarea {
+        border: 1px solid #cccccc;
+            border-top-color: #999999;
+
+}
+.scroll-textarea > .scroll-content {
+        overflow: hidden ;
+
+}
+.scroll-textarea > .scroll-content > textarea {
+        border: none ;
+            box-sizing: border-box;
+                height: 100% ;
+                    margin: 0;
+                        max-height: none ;
+                            max-width: none ;
+                                overflow: scroll ;
+                                    outline: none;
+                                        padding: 2px;
+                                            position: relative ;
+                                                top: 0;
+                                                    width: 100% ;
+
+}
+.scroll-textarea > .scroll-content > textarea::-webkit-scrollbar {
+        height: 0;
+            width: 0;
+
+}
+
+
+
+
+/*************** SCROLLBAR MAC OS X ***************/
+
+.scrollbar-macosx > .scroll-element .scroll-bar {
+        background-color: #6C6E71;
+}
+.scroll-textarea {
+        border: 1px solid #cccccc;
+            border-top-color: #999999;
+
+}

@@ -1,0 +1,7 @@
+Contact: mailto:issue@rothirsch.tech
+Expires: 2022-12-01T10:00:00.000Z
+[COMING SOON] Encryption: https://www.rothirsch.tech/pgp-key.txt
+Acknowledgments: https://www.rothirsch.tech/hall-of-fame.html
+Preferred-Languages: en, de
+Canonical: https://www.rothirsch.tech/.well-known/security.txt
+[COMING SOON] Policy: https://www.rothirsch.tech/security-policy.txt

@@ -1,0 +1,71 @@
+
+.bird-container {
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.lottie-birds {
+  width: 400px;
+  height: 400px;
+}
+
+.birds-heading2 h2 {
+	text-align:center;
+}
+.birds-heading2 {
+	margin-top: 50px;
+	padding-top: 0.5%;
+	padding-bottom: 1%;
+	padding-left: 1%;
+	padding-right: 1%;
+}
+
+.birds-report {
+    width: 100%; height: auto;
+    margin-left:0;
+    transition-duration: 0.5s;
+}
+.birds-report img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    object-fit: contain;
+}
+
+.birds-report:hover{
+    transform: rotate(15deg);
+    transition-duration: 0.5s;
+    cursor: pointer;
+}
+
+@media screen and (orientation: portrait) {
+	.birds-img {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 5px;
+ 		transition-duration: 0.5s;
+	}
+	.birds-img:hover{
+		transform: rotate(15deg);
+		transition-duration: 0.5s;
+		cursor: pointer;
+	}
+	.bird-container {
+	    padding: 2%;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    border-radius: 10px;
+	}
+	.birds-heading2 {
+		margin-top: 5%;
+		padding-top: 4.5%;
+		padding-bottom: 5.5%;
+		padding-left: 1%;
+		padding-right: 1%;
+	}
+}

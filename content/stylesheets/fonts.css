@@ -1,0 +1,124 @@
+@font-face {
+    font-family: 'AnonymousPro-Regular';
+    src: url('fonts/anonymous-pro/AnonymousPro-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Acherus Militant';
+    src: url('fonts/Acherus-Militant-Webfont-otf/Web_Fonts/acherusmilitant2_ultralight_macroman/acherus_militant_2_-_ultralight.otf-webfont.woff') format('truetype');
+}
+@font-face {
+    font-family: 'Quicksand';
+    src: url('fonts/Quicksand/static/Quicksand-Light.ttf') format('truetype');
+}
+body {
+
+    font-family: 'Quicksand';
+    font-weight: 300;
+
+    letter-spacing:0.7pt;
+    word-spacing:1.5pt;
+    line-height:1.9em;
+
+}
+h1 {
+  word-break: break-word;
+  margin-bottom: 50px;
+}
+h2 {
+  margin-top: 40px;
+}
+@media screen
+  and (orientation: portrait) {
+    body {font-size:20px;}
+
+    .pn-name p {
+      line-height:20px;
+      height:20px;
+      padding:0;
+      margin:0;
+      vertical-align: bottom;
+      font-size:14px!important;
+    }
+}
+@media screen
+and (orientation: landscape) {
+
+  body {font-size:20px;}
+  .nav li { font-size:0.7em; }
+
+  .pn-name p {
+    font-size:19px!important;
+    line-height:16px;
+    font-family: 'Acherus Militant';
+    height:16px;
+    padding:0;
+    margin:0;
+    vertical-align: bottom;
+  }
+
+}
+
+/* Reading */
+    .single-page p,
+    .siteInfo p,
+    #txt,
+    .wms_txt
+    {
+        font-size:0.9em;
+    }
+
+    h1 {
+      font-family: 'Acherus Militant'!important;
+      font-size:50px!important;
+    	text-align:center!important;
+    }
+    #txt h2,
+    #txt h3,
+    #txt h4 {
+        font-family: 'AnonymousPro-Regular'!important;
+    }
+    #txt h2 { font-size:115%; }
+    #txt h3 { font-size:110%; }
+    #txt h4 { font-size:105%; }
+    #txt h5 { font-size:100%; }
+
+#pages p {
+    margin-left:4%!important;
+    text-align:left;
+}
+
+/* Reading */
+
+/* -------------------- */
+
+
+/* DEVICES */
+
+#txt h1,
+#txt h2,
+#txt h3,
+#txt h4 {
+    width:100%;
+    text-align:right;
+}
+
+@media only screen
+  and (-webkit-min-device-pixel-ratio: 1)
+  and (orientation: landscape) {
+    body {font-size:240%;}
+}
+@media only screen
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: landscape) {
+    body {font-size:150%;}
+}
+@media only screen
+  and (-webkit-min-device-pixel-ratio: 3)
+  and (orientation: landscape) {
+    body {font-size:150%;}
+}
+@media only screen
+  and (-webkit-min-device-pixel-ratio: 4)
+  and (orientation: landscape) {
+    body {font-size:150%;}
+}

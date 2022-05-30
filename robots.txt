@@ -1,0 +1,3 @@
+Sitemap: https://www.rothirsch.tech/sitemap.xml
+User-agent: *
+Disallow: /content/php/

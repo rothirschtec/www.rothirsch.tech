@@ -1,0 +1,63 @@
+
+/*Landscape*/
+@media screen
+  and (orientation: landscape) {
+
+    .navbar-toggle {
+        right:90%;
+    }
+    .navbar {
+    	position: absolute;
+    	max-height:100%!important;
+    	min-height:100%!important;
+    	height:100%!important;
+    	max-width:60px!important;
+    	min-width:60px!important;
+    	width:60px!important;
+    	z-index:4!important;
+    	top: 0;
+    	left: 5px;
+      overflow-y: auto!important;
+    }
+    .navbar ul  {
+
+      position:absolute;
+
+      width: 80vh;
+      left: calc(-40vh + 20px);
+      top: calc(40vh - 20px);
+
+      -webkit-transform: rotate(90deg);
+      transform: rotate(90deg);
+
+      display:flex;
+      list-style:none;
+
+    }
+    .navbar li  {
+
+    	position:relative;
+    	margin:20px!important;
+    	width:auto!important;
+
+    }
+    .navbar li a {
+
+    	width:auto!important;
+    	text-align:center!important;
+
+    }
+
+    .nav li { margin:0!important; padding:0!important; }
+}
+
+/*Portrait*/
+@media screen
+  and (orientation: portrait) {
+
+    .navbar-toggle {
+        float: left!important;
+        margin-left: 10px!important;
+    }
+
+}

@@ -1,0 +1,152 @@
+#pagenavigation {
+    position:absolute;
+    overflow:hidden;
+}
+
+.single-page {
+    position:relative;
+    overflow:hidden;
+    z-index:2;
+    border-style: solid;
+    border-width: 1px 1px 1px;
+    display:block;
+    cursor:pointer;
+}
+
+.pn-image {
+    position:absolute;
+    top:5%;
+    width:70%; max-height:90%;
+    left:20%;
+}
+.pn-image img {
+    display:block;
+    max-width:80%; max-height:80%;
+    border-radius:50%!important;
+}
+
+@media screen
+  and (orientation: landscape) {
+
+    #pagenavigation {
+      width:20%; height:100%;
+      top:0;
+      right:0;
+      z-index:5!important;
+    }
+
+
+    #pn-outer {
+      position:relative;
+      height:100vh; width:100%;
+      display:block!important;
+      overflow-x:hidden;
+      overflow-y:auto;
+    }
+
+
+    .single-page  {
+      position:relative;
+      -webkit-border-radius: 4px 0px 0px 4px;
+      -moz-border-radius: 4px 0px 0px 4px;
+      border-radius: 4px 0px 0px 4px;
+      direction:rtl;
+      left:10%;
+      width:90%;height:25vh;
+      margin-top:5%;
+    }
+    .single-page:last-child {
+      margin-bottom:20px;
+    }
+
+
+    .pn-image {
+        position:absolute;
+        width:100%; height:100%;
+        overflow:hidden;
+    }
+
+    .pn-image img {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      margin-right:0;
+      transform: translate(-50%, -50%);
+      width:auto; height:auto;
+      max-width:60%; max-height:80%;
+    }
+
+    .pn-name {
+      position:absolute;
+      width:100%; height:24px;
+      bottom:5px; left:0;
+      margin:0;
+      padding:0;
+      max-width:100%;
+      overflow:hidden;
+      display:block;
+    }
+}
+@media screen
+and (orientation: portrait) {
+
+  #pagenavigation {
+    left:0; top:5px;
+    width:100%; height:20%;
+    z-index:10;
+  }
+  #pn-outer {
+    left:0; top:0;
+    height:100%; max-height:100%;
+    width:100%;
+    overflow-y:hidden;
+    overflow-x:auto;
+    white-space:nowrap;
+    padding-bottom:20px;
+    padding-bottom:20px;
+  }
+
+  .single-page  {
+    width:200px;height:100%;
+    margin:7px;
+    display: inline-block;
+    border-radius: 4px;
+    direction:rtl;
+  }
+
+  .single-page:first-child  {
+    margin-left:20px;
+  }
+
+  .single-page:last-child  {
+    margin-right:20px;
+  }
+
+  .pn-image {
+    position:absolute;
+    width:100%; height:100%;
+    overflow:hidden;
+  }
+
+  .pn-image img {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    margin-right:0;
+    transform: translate(-50%, -50%);
+    width:auto; height:auto;
+    max-width:60%; max-height:80%;
+  }
+
+  .pn-name {
+    position:absolute;
+    width:100%; height:24px;
+    bottom:2px; left:0;
+    margin:0;
+    padding:0;
+    max-width:100%;
+    overflow:hidden;
+    display:block;
+  }
+
+}
