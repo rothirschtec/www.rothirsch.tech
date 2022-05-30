@@ -196,6 +196,7 @@ $(document).ready ( function () {
   }
   // Show no cookies message
   display_no_cookies_message(language);
+  // Self developed analyzation disabled, using plausible.io instead
   // analyse_site_visitors();
 });
 $(document).ready ( function () {

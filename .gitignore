@@ -1,5 +1,9 @@
 *.swp
 *.html
 content/config
+content/main.js
+content/main.css
+content/main.min.js
+content/main.min.css
 de/*
 en/*
