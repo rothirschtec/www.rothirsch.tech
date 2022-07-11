@@ -16,3 +16,4 @@ cat ${hdir}no-cookies.css       >> ${rdir}main.css
 cat ${hdir}colors.css           >> ${rdir}main.css
 cat ${hdir}fonts.css            >> ${rdir}main.css
 cat ${hdir}OSM.css              >> ${rdir}main.css
+cat ${hdir}blog.css              >> ${rdir}main.css
