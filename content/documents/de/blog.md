@@ -14,8 +14,6 @@ template:   posts.html
 robots:     index, follow
 ---
 
-<!-- Background -->
-<div class=rothirsch_bg_layer>
-  <div class="rothirsch_bg light-color"></div>
-  <span class="no-cookies"></span>
-</div>
+# Blog
+
+Beiträge werden bald veröffentlicht

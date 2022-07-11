@@ -14,7 +14,6 @@ template:   posts.html
 robots:     index, follow
 ---
 
-<!-- Background -->
-<div class=rothirsch_bg_layer>
-  <div class="rothirsch_bg light-color"></div>
-</div>
+# Blog
+
+Content will follow soon
