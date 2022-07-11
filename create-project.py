@@ -189,11 +189,6 @@ class Content():
 
                         path = str(f"{md.Meta['base_url']}").strip("['']")
 
-                        # Break out for posts
-                        if re.search('/posts/', markdowns):
-                            #path = re.sub(r'^' + language + '/', f'blog/{language}/', path)
-                            print(path)
-
 
                         template_content = self.replace_language(language, template_content)
                         template_content = self.replace_string('0!titleX', str(f"{md.Meta['title']}").strip("['']"), template_content)
@@ -236,7 +231,11 @@ class Content():
                         template_content = self.replace_other_language(language, template_content)
 
                         # Create menu
-                        template_content = self.replace_articles_menu(language, base, file, template_content)
+
+                        # Break out for posts
+                        if not re.search('/posts/', markdowns):
+                            template_content = self.replace_articles_menu(language, base, file, template_content)
+                            
                         template_content = self.replace_documents_menu(path, language, template_content)
 
                         # sitemap.xml
