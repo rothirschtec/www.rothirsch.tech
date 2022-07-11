@@ -99,6 +99,10 @@ def main():
         replaceItem(destinationPath, '!!wuAlt', wuAlt)
         replaceItem(destinationPath, '!!wuBaseUrl', wuBaseUrl)
 
+
+    os.system(f'vim {destinationPath}')
+    os.system(f'git commit -am {destinationPath}')
+
 if __name__ == "__main__":
 
     main()
