@@ -1,0 +1,21 @@
+---
+Title:      !!wuTitle
+Menuname:   !!wuMenuName
+Summary:    !!wuSummary
+Language:   !!wuLanguage
+Keywords:   !!wuKeywords
+Authors:    René Zingerle, SSCP
+TwitterA:   r9_rtec
+Timestamp:  !!wuTimeStamp
+Image:      !!wuImage
+Alt:        !!wuAlt
+Index:      !!wuIndex
+ChangeFreq: monthly
+Priority:   0.8
+base_url:   !!wuBaseUrl
+child:      none
+parent:     none
+robots:     index, follow
+---
+
+#
