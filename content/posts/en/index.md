@@ -12,7 +12,7 @@ Alt:
 Index:      2
 ChangeFreq: monthly
 Priority:   0.8
-base_url:   en/blog/index.md
+base_url:   en/blog/index.html
 child:      none
 parent:     none
 template:   posts.html
