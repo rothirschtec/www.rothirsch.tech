@@ -12,7 +12,7 @@ Alt:
 Index:      0
 ChangeFreq: monthly
 Priority:   0.8
-base_url:   de/test.md
+base_url:   de/blog/test.html
 child:      none
 parent:     none
 template:   posts.html

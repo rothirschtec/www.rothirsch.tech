@@ -71,7 +71,7 @@ def main():
         wuTimeStamp = now.strftime('%Y-%m-%d_%H:%M:%S')
         wuImage = input("Image path: [Default: content/images/icons/menu/3_Pillars_Rothirsch-Tech-GmbH.png] ") or f"content/images/icons/menu/3_Pillars_Rothirsch-Tech-GmbH.png"
         wuAlt = input("Alternative image text: ")
-        wuBaseUrl = f"{wuLanguage}/{wuTitleLower}.md"
+        wuBaseUrl = f"{wuLanguage}/blog/{wuTitleLower}.html"
 
         # path where original file is located
         sourcePath = f"{cwd}/content/templates/write-up.template"
