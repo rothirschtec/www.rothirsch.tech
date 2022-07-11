@@ -403,9 +403,8 @@ def main():
     Templates.clean_template(path_templates)
 
     print('Delete old files')
-    Pages.delete(f"{cwd}/de/*")
-    Pages.delete(f"{cwd}/en/*")
-    Pages.delete(f"{cwd}/blog/*")
+    Pages.delete(f"{cwd}/de/")
+    Pages.delete(f"{cwd}/en/")
 
     print('Create menu index')
     Pages.index_markdowns(Pages(), path_articles, path_templates)
@@ -414,7 +413,7 @@ def main():
     print('Create html files')
     Content.create_html(Content(), path_files, f'{path_templates}', cwd)
     Content.create_html(Content(), path_articles, f'{path_templates}', cwd)
-    Content.create_html(Content(), path_posts, f'{path_templates}', cwd)
+    #Content.create_html(Content(), path_posts, f'{path_templates}', cwd)
     Content.create_html(Content(), path_documents, f'{path_templates}', cwd)
 
     with open(f'{cwd}/sitemap.xml', 'a') as file:

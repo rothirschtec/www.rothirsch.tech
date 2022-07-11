@@ -38,9 +38,10 @@ def findindex(filename):
                 datafile = temp_f.readlines()
                 for line in datafile:
                     if 'Index:' in line:
+                        print(line)
                         i += 1
 
-    return str(i)
+    return str(i - 1)
 
 def main():
 
@@ -51,7 +52,6 @@ def main():
     path_posts = f"{cwd}/content/posts/"
 
     writeUp = input("Which kind of write-up you will take? (article/post): ")
-    print(writeUp)
 
     if writeUp not in knownWriteUps:
 
@@ -98,6 +98,7 @@ def main():
         replaceItem(destinationPath, '!!wuImage', wuImage)
         replaceItem(destinationPath, '!!wuAlt', wuAlt)
         replaceItem(destinationPath, '!!wuBaseUrl', wuBaseUrl)
+        replaceItem(destinationPath, '!!wuTemplate', f'{writeUp}s.html')
 
 
     os.system(f'vim {destinationPath}')
