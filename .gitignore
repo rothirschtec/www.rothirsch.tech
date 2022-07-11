@@ -1,5 +1,7 @@
 *.swp
 *.html
+!content/templates/*.html
+content/templates/cleaned_*
 content/config
 content/main.js
 content/main.css
