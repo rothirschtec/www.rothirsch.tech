@@ -189,6 +189,12 @@ class Content():
 
                         path = str(f"{md.Meta['base_url']}").strip("['']")
 
+                        # Break out for posts
+                        if re.search('/posts/', markdowns):
+                            #path = re.sub(r'^' + language + '/', f'blog/{language}/', path)
+                            print(path)
+
+
                         template_content = self.replace_language(language, template_content)
                         template_content = self.replace_string('0!titleX', str(f"{md.Meta['title']}").strip("['']"), template_content)
                         template_content = self.replace_string('0!keywordsX', str(f"{md.Meta['keywords']}").strip("['']"), template_content)
@@ -413,7 +419,7 @@ def main():
     print('Create html files')
     Content.create_html(Content(), path_files, f'{path_templates}', cwd)
     Content.create_html(Content(), path_articles, f'{path_templates}', cwd)
-    #Content.create_html(Content(), path_posts, f'{path_templates}', cwd)
+    Content.create_html(Content(), path_posts, f'{path_templates}', cwd)
     Content.create_html(Content(), path_documents, f'{path_templates}', cwd)
 
     with open(f'{cwd}/sitemap.xml', 'a') as file:
