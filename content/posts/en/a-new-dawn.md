@@ -12,7 +12,7 @@ Alt:
 Index:      1
 ChangeFreq: monthly
 Priority:   0.8
-base_url:   en/a-new-dawn.md
+base_url:   en/blog/a-new-dawn.html
 child:      none
 parent:     none
 template:   posts.html

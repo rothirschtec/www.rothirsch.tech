@@ -191,8 +191,7 @@ class Content():
 
                         # Break out for posts
                         if re.search('/posts/', markdowns):
-                            path = re.sub(r'^' + language + '/', f'blog/{language}/', path)
-                            path = re.sub(r'.md$', f'.html', path)
+                            path = re.sub(r'^' + language + '/', f'{language}/blog/', path)
 
                         template_content = self.replace_language(language, template_content)
                         template_content = self.replace_string('0!titleX', str(f"{md.Meta['title']}").strip("['']"), template_content)
