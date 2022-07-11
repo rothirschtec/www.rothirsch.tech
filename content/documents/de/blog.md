@@ -1,5 +1,5 @@
 ---
-Title:      Willkommen auf meinem Blog
+Title:      Willkommen auf dem Blog der Rothirsch Tech. GmbH
 Name:       blog
 Summary:    Blog der Website der Rothirsch Tech. GmbH
 Language:   de
@@ -13,8 +13,6 @@ base_url:   de/blog.html
 robots:     index, follow
 ---
 
-<!-- Background -->
-<div class=rothirsch_bg_layer>
-  <div class="rothirsch_bg light-color"></div>
-  <span class="no-cookies"></span>
-</div>
+# Willkommen auf dem Blog der Rothirsch Tech. GmbH
+
+Hier findest tägliche Beiträge über die Arbeit innerhalb RT

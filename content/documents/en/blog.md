@@ -13,7 +13,6 @@ base_url:   en/blog.html
 robots:     index, follow
 ---
 
-<!-- Background -->
-<div class=rothirsch_bg_layer>
-  <div class="rothirsch_bg light-color"></div>
-</div>
+# Welcome Rothirsch Tech. GmbH's blog
+
+Here you find daily content about the work done inside RT
