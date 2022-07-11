@@ -101,7 +101,8 @@ def main():
 
 
     os.system(f'vim {destinationPath}')
-    os.system(f'git commit -am {destinationPath}')
+    os.system(f'git add {destinationPath}')
+    os.system(f'git commit -m "Added {wuTitle} from {wuAuthors}" {destinationPath}')
 
 if __name__ == "__main__":
 
