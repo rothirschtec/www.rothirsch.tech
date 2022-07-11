@@ -1,12 +1,12 @@
 ---
 Title:      Test
-Menuname:   test
+Menuname:   Test
 Summary:    asdf
 Language:   de
-Keywords:   asd
+Keywords:   
 Authors:    René Zingerle, SSCP
 TwitterA:   r9_rtec
-Timestamp:  2022-07-11_17:04:54
+Timestamp:  2022-07-11_17:09:00
 Image:      content/images/icons/menu/3_Pillars_Rothirsch-Tech-GmbH.png
 Alt:        
 Index:      0
