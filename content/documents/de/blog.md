@@ -10,6 +10,7 @@ Index:      4
 ChangeFreq: yearly
 Priority:   0.0
 base_url:   de/blog.html
+template:   posts.html
 robots:     index, follow
 ---
 
