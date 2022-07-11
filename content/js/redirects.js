@@ -10,6 +10,7 @@ function redirect_to_language(language) {
   var fhof = /hall-of-fame.html/g;
   var f404 = /404.html/g;
   var f503 = /503.html/g;
+  var fblog = /blog.html/g;
 
   var dereg = /\/de\//g;
   var enreg = /\/en\//g;
@@ -42,6 +43,15 @@ function redirect_to_language(language) {
         window.location.href = 'de/503.html';
       } else {
         window.location.href = 'en/503.html';
+      }
+
+    // blog.html
+    } else if ( fblog.test(window.location.pathname) ) {
+
+      if (language == 'de-DE' || language == 'de-AT') {
+        window.location.href = 'blog/de/blog.html';
+      } else {
+        window.location.href = 'blog/en/blog.html';
       }
 
     // index.html

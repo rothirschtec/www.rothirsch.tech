@@ -15,7 +15,7 @@ Priority:   0.8
 base_url:   !!wuBaseUrl
 child:      none
 parent:     none
+template:   posts.html
 robots:     index, follow
 ---
-
 #

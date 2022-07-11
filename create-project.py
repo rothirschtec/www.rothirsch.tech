@@ -185,9 +185,15 @@ class Content():
 
                         # Replace the target string inside template_html with content from md
                         template_content = template_content.replace('0!contentX', f'{html_file}')
-
                         language = str(f"{md.Meta['language']}").strip("['']")
+
                         path = str(f"{md.Meta['base_url']}").strip("['']")
+
+                        # Break out for posts
+                        if re.search('/posts/', markdowns):
+                            path = re.sub(r'^' + language + '/', f'blog/{language}/', path)
+                            path = re.sub(r'.md$', f'.html', path)
+
                         template_content = self.replace_language(language, template_content)
                         template_content = self.replace_string('0!titleX', str(f"{md.Meta['title']}").strip("['']"), template_content)
                         template_content = self.replace_string('0!keywordsX', str(f"{md.Meta['keywords']}").strip("['']"), template_content)
@@ -199,6 +205,7 @@ class Content():
                             twitter_author = str(f"{md.Meta['twittera']}").strip("['']")
                         except:
                             twitter_author = 'rothirschtech'
+
                         template_content = self.replace_string('0!twitterauthorX', f'{twitter_author}', template_content)
 
                         # Child/Parent pages
@@ -387,9 +394,10 @@ def main():
     cwd = f'{os.path.dirname(__file__)}'
 
     path_articles = f"{cwd}/content/articles/"
+    path_posts = f"{cwd}/content/posts/"
     path_templates = f"{cwd}/content/templates/"
     path_documents = f"{cwd}/content/documents/"
-    path_files = f"{cwd}/content/files"
+    path_files = f"{cwd}/content/files/"
 
     with open(f'{cwd}/sitemap.xml', 'w') as file:
         file.write('<?xml version="1.0" encoding="UTF-8"?>\n')
@@ -400,8 +408,9 @@ def main():
     Templates.clean_template(path_templates)
 
     print('Delete old files')
-    Pages.delete(f"{cwd}/de/")
-    Pages.delete(f"{cwd}/en/")
+    Pages.delete(f"{cwd}/de/*")
+    Pages.delete(f"{cwd}/en/*")
+    Pages.delete(f"{cwd}/blog/*")
 
     print('Create menu index')
     Pages.index_markdowns(Pages(), path_articles, path_templates)
@@ -410,11 +419,11 @@ def main():
     print('Create html files')
     Content.create_html(Content(), path_files, f'{path_templates}', cwd)
     Content.create_html(Content(), path_articles, f'{path_templates}', cwd)
+    Content.create_html(Content(), path_posts, f'{path_templates}', cwd)
     Content.create_html(Content(), path_documents, f'{path_templates}', cwd)
 
     with open(f'{cwd}/sitemap.xml', 'a') as file:
         file.write('</urlset>')
-
 
     print('Minify css & js')
     Files.minify_file(f'{cwd}/content/main.js', 'js')

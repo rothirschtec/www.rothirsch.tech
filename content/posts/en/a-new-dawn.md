@@ -15,6 +15,7 @@ Priority:   0.8
 base_url:   en/a-new-dawn.md
 child:      none
 parent:     none
+template:   posts.html
 robots:     index, follow
 ---
 

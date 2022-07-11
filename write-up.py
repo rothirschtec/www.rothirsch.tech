@@ -74,7 +74,7 @@ def main():
         wuBaseUrl = f"{wuLanguage}/{wuTitleLower}.md"
 
         # path where original file is located
-        sourcePath = f"{cwd}/content/templates/write-up.md"
+        sourcePath = f"{cwd}/content/templates/write-up.template"
 
         # path were a copy of file is needed
         destinationPath = f"{cwd}/content/{writeUp}s/{wuLanguage}/{wuTitleLower}.md"

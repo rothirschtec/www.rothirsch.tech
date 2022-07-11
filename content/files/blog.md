@@ -6,9 +6,9 @@ Language:   en
 Keywords:   Startpage, IT Security, IT Consulting, Cloud, Rothirsch Tech. GmbH, Tirol
 Authors:    René Zingerle, SSCP
 Timestamp:  2022-01-13_12:03:00
-Template:   blogs.html
+Template:   posts.html
 ChangeFreq: never
 Priority:   0.0
-base_url:   index.html
+base_url:   blog.html
 robots:     index, follow
 ---
