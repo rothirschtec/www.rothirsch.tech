@@ -19,8 +19,6 @@ def replaceItem(filename, old, new):
         # using the replace() function
         data = data.replace(old, new)
 
-
-
     # Write the file out again
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, 'w') as file:
@@ -60,7 +58,6 @@ def main():
         print("Unknown write-up. Use on of these: ", knownWriteUps)
 
     else:
-
 
         wuTitle = input("Title: ")
         wuTitleLower = wuTitle.replace(" ", "-").lower()
