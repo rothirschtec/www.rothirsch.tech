@@ -1,7 +1,7 @@
 ---
-Title:      SBC wordpress cluster - first attempt
+Title:      SBC cluster: DRBD + Pacemaker (Banana Pi m64)
 Menuname:   first attempt
-Summary:    Tested a few configurations with the banana pi m64
+Summary:    High availability cluster on two Banana Pi m64
 Language:   en
 Keywords:   Banana Pi m64, Cluster, Singleboard Computer, SD Card, eMMC, Lab
 Authors:    René Zingerle, SSCP
@@ -12,13 +12,11 @@ Alt:        Two Banana Pi m64, connected via a switch
 Index:      0
 ChangeFreq: monthly
 Priority:   0.8
-base_url:   en/blog/projects/sbc-cluster/sbc-wordpress-cluster---first-attempt.html
+base_url:   en/blog/projects/sbc-cluster/sbc-cluster-drbd-pacemaker.html
 child:      none
 parent:     none
 template:   single-post.html
 robots:     index, follow
 ---
 
-## SBC wordpress cluster - first attempt
-
-Test
+# SBC cluster: DRBD + Pacemaker (Banana Pi m64)
