@@ -1,6 +1,33 @@
 #single-post-content,
 #blog-content {
   position:absolute;
-  width:90%; height: 100%;
+  width:90%; height: auto;
   left:5%;
+}
+
+#blog-content .flex-container img {
+  max-width: 200px;
+}
+
+#blog-content a {
+  text-decoration: none;
+  display: block;
+  padding-left:5px;
+  padding-right:5px;
+  border-radius: 5px;
+}
+#blog-content a:hover {
+  background-color: #eee!important;
+}
+
+#blog-content .flex-container {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+#blog-content .flex-container > div {
+  width: auto;
+  margin: 10px;
+  text-align: center;
+  line-height: 75px;
 }

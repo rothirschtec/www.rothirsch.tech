@@ -1,7 +1,7 @@
 
-function readfile(dir, title, summary) {
+function readfile(dir, title, summary, image, alt) {
 
-  $('#blog-content').append("<a href='../" + dir + "'><h2>" + title + "</h2><p>" + summary + "</p></a>");
+  $('#blog-content').append("<a href='../" + dir + "'><h2>" + title + "</h2><div class='flex-container'><div><img src='" + image + "' alt='" + alt + "'></div><div><p>" + summary + "</p></div></div></a>");
 
 }
 
@@ -14,16 +14,17 @@ function readIndex() {
   var title;
   var summary;
 
-
   $.getJSON( "/blog-index.json", function( data ) {
     $.each(data.posts, function() {
       $.each(this, function(key, val){
 
         if (key == "dir") { dir = val; }
         if (key == "title") { title = val; }
-        if (key == "summary") {
-          summary = val;
-          readfile(dir, title, summary);
+        if (key == "summary") { summary = val; }
+        if (key == "image") { image = val;}
+        if (key == "alt") {
+          alt = val;
+          readfile(dir, title, summary, image, alt);
         }
 
       });

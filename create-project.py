@@ -269,7 +269,7 @@ class Content():
                         # Add blog-index
                         if re.search('/posts/', markdowns):
                             with open(f'{cwd}/blog-index.json', 'a') as file:
-                                file.write(' {"dir": "' + str(f"{md.Meta['base_url']}").strip("['']") + '", "title": "' + str(f"{md.Meta['title']}").strip("['']") + '", "summary": "' + str(f"{md.Meta['summary']}").strip("['']") + '", "image": "' + str(f"{md.Meta['image']}").strip("['']") + '" }, "image": "' + str(f"{md.Meta['image']}").strip("['']") + '" }')
+                                file.write(' {"dir": "' + str(f"{md.Meta['base_url']}").strip("['']") + '", "title": "' + str(f"{md.Meta['title']}").strip("['']") + '", "summary": "' + str(f"{md.Meta['summary']}").strip("['']") + '", "image": "' + str(f"{md.Meta['image']}").strip("['']") + '", "alt": "' + str(f"{md.Meta['alt']}").strip("['']") + '" },')
 
 
                         # Shrink html

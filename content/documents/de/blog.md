@@ -15,5 +15,3 @@ robots:     index, follow
 ---
 
 # Blog
-
-Beiträge werden bald veröffentlicht

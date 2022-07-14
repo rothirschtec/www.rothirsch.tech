@@ -15,5 +15,3 @@ robots:     index, follow
 ---
 
 # Blog
-
-Content will follow soon
