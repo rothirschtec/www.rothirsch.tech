@@ -71,13 +71,14 @@ def main():
         wuTimeStamp = now.strftime('%Y-%m-%d_%H:%M:%S')
         wuImage = input("Image path: [Default: content/images/icons/menu/3_Pillars_Rothirsch-Tech-GmbH.png] ") or f"content/images/icons/menu/3_Pillars_Rothirsch-Tech-GmbH.png"
         wuAlt = input("Alternative image text: ")
-        wuBaseUrl = f"{wuLanguage}/blog/{wuTitleLower}.html"
+        wuSubDir = input("Subdir (Example: 'projects/sbc-project/') [leaf empty for blog directory]: ")
+        wuBaseUrl = f"{wuLanguage}/blog/{wuSubDir}{wuTitleLower}.html"
 
         # path where original file is located
         sourcePath = f"{cwd}/content/templates/write-up.template"
 
         # path were a copy of file is needed
-        destinationPath = f"{cwd}/content/{writeUp}s/{wuLanguage}/{wuTitleLower}.md"
+        destinationPath = f"{cwd}/content/{writeUp}s/{wuLanguage}/{wuSubDir}{wuTitleLower}.md"
         os.makedirs(os.path.dirname(destinationPath), exist_ok=True)
 
         # call copyfile() method
