@@ -22,11 +22,20 @@ $(document).ready ( function () {
   // Self developed analyzation disabled, using plausible.io instead
   // analyse_site_visitors();
 
-});
 
-$(document).ready ( function () {
 
   // Trigger change_color function
   change_color();
+
+
+  // Manage blog
+
+  if( $("#blog-content").length ) {
+
+    readIndex();
+    //alert(language);
+    //readfile('/en/blog/projects/sbc-cluster/sbc-wordpress-cluster---first-attempt.html', 'Test');
+
+  }
 
 });

@@ -235,17 +235,24 @@ class Content():
                         # Break out for posts
                         if not re.search('/posts/', markdowns):
                             template_content = self.replace_articles_menu(language, base, file, template_content)
-                            
+
                         template_content = self.replace_documents_menu(path, language, template_content)
 
                         # sitemap.xml
                         self.save_sitemap_line(str(f"{md.Meta['timestamp']}").strip("['']"), str(f"{md.Meta['changefreq']}").strip("['']"), str(f"{md.Meta['priority']}").strip("['']"), f"{Site.url}/" + str(f"{md.Meta['base_url']}").strip("['']"), cwd)
+
+                        # Add blog-index
+                        if re.search('/posts/', markdowns):
+                            with open(f'{cwd}/blog-index.json', 'a') as file:
+                                file.write(' {"dir": "' + str(f"{md.Meta['base_url']}").strip("['']") + '"},')
+
 
                         # Shrink html
                         template_content = re.sub('\s+(?=<)', '', template_content)
 
                     # Write the file out again
                     filename = f"{cwd}/{path}"
+
                     os.makedirs(os.path.dirname(filename), exist_ok=True)
                     with open(filename, 'w') as file:
                         file.write(template_content)
@@ -399,9 +406,15 @@ def main():
     path_documents = f"{cwd}/content/documents/"
     path_files = f"{cwd}/content/files/"
 
+    # Create sitemap.xml
     with open(f'{cwd}/sitemap.xml', 'w') as file:
         file.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         file.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+
+    # Create blog-index.json
+    with open(f'{cwd}/blog-index.json', 'w') as file:
+        file.write('{')
+        file.write('"posts": [')
 
 
     print('Prepare html templates')
@@ -421,8 +434,14 @@ def main():
     Content.create_html(Content(), path_posts, f'{path_templates}', cwd)
     Content.create_html(Content(), path_documents, f'{path_templates}', cwd)
 
+    # Create sitemap.xml
     with open(f'{cwd}/sitemap.xml', 'a') as file:
         file.write('</urlset>')
+        
+    # Create blog-index.json
+    with open(f'{cwd}/blog-index.json', 'a') as file:
+        file.write(' ]')
+        file.write('}')
 
     print('Minify css & js')
     Files.minify_file(f'{cwd}/content/main.js', 'js')
