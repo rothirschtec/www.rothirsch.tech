@@ -99,7 +99,11 @@ def main():
         replaceItem(destinationPath, '!!wuImage', wuImage)
         replaceItem(destinationPath, '!!wuAlt', wuAlt)
         replaceItem(destinationPath, '!!wuBaseUrl', wuBaseUrl)
-        replaceItem(destinationPath, '!!wuTemplate', f'{writeUp}s.html')
+
+        if writeUp is "post":
+            replaceItem(destinationPath, '!!wuTemplate', f'single-{writeUp}.html')
+        else:
+            replaceItem(destinationPath, '!!wuTemplate', f'{writeUp}s.html')
 
 
     os.system(f'vim {destinationPath}')

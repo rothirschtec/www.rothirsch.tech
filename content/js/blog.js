@@ -1,19 +1,8 @@
 
-function readfile(file, name) {
+function readfile(dir, title, summary) {
 
-    $.ajax({
+  $('#blog-content').append("<a href='../" + dir + "'><h2>" + title + "</h2><p>" + summary + "</p></a>");
 
-        url: file,
-        type: "GET",
-        cache: false,
-        async: false,
-        success: function(data) {
-
-          $('#blog-content').append(data);
-
-        },
-
-    });
 }
 
 function readIndex() {
@@ -21,18 +10,23 @@ function readIndex() {
   // read local JSON file using jQuery
   // Source: https://www.tutorialstonight.com/read-json-file-in-javascript.php
 
+  var dir;
+  var title;
+  var summary;
+
+
   $.getJSON( "/blog-index.json", function( data ) {
-
     $.each(data.posts, function() {
-
       $.each(this, function(key, val){
 
-        if (key == "dir") {
-          console.log(val);//here data
+        if (key == "dir") { dir = val; }
+        if (key == "title") { title = val; }
+        if (key == "summary") {
+          summary = val;
+          readfile(dir, title, summary);
         }
 
       });
-
     });
   });
 

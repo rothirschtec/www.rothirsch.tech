@@ -37,6 +37,31 @@ class Content():
         template_content = template_content.replace(f'{old}', f'{new}')
         return template_content
 
+    def replace_string_inside_file(self, search_text, replace_text, filename):
+
+        # Opening our text file in read only
+        # mode using the open() function
+        with open(filename, 'r') as file:
+
+            # Reading the content of the file
+            # using the read() function and storing
+            # them in a new variable
+            data = file.read()
+
+            # Searching and replacing the text
+            # using the replace() function
+            data = data.replace(search_text, replace_text)
+
+        # Opening our text file in write only
+        # mode to write the replaced content
+        with open(filename, 'w') as file:
+
+            # Writing the replaced data in our
+            # text file
+            file.write(data)
+
+
+
     def replace_articles_menu(self, language, base, name, template_content):
 
 
@@ -244,7 +269,7 @@ class Content():
                         # Add blog-index
                         if re.search('/posts/', markdowns):
                             with open(f'{cwd}/blog-index.json', 'a') as file:
-                                file.write(' {"dir": "' + str(f"{md.Meta['base_url']}").strip("['']") + '"},')
+                                file.write(' {"dir": "' + str(f"{md.Meta['base_url']}").strip("['']") + '", "title": "' + str(f"{md.Meta['title']}").strip("['']") + '", "summary": "' + str(f"{md.Meta['summary']}").strip("['']") + '" },')
 
 
                         # Shrink html
@@ -437,11 +462,14 @@ def main():
     # Create sitemap.xml
     with open(f'{cwd}/sitemap.xml', 'a') as file:
         file.write('</urlset>')
-        
+
     # Create blog-index.json
     with open(f'{cwd}/blog-index.json', 'a') as file:
         file.write(' ]')
         file.write('}')
+
+
+    Content.replace_string_inside_file(Content(), ", ]", " ]", f'{cwd}/blog-index.json')
 
     print('Minify css & js')
     Files.minify_file(f'{cwd}/content/main.js', 'js')

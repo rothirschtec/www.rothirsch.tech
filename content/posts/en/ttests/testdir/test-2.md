@@ -15,8 +15,8 @@ Priority:   0.8
 base_url:   en/blog/ttests/testdir/test-2.html
 child:      none
 parent:     none
-template:   posts.html
+template:   single-post.html
 robots:     index, follow
 ---
 
-# Test 2
+## Test 2

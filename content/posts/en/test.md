@@ -15,8 +15,8 @@ Priority:   0.8
 base_url:   en/blog/test.html
 child:      none
 parent:     none
-template:   posts.html
+template:   single-post.html
 robots:     index, follow
 ---
 
-# Test
+## Test
