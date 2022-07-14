@@ -1,5 +1,6 @@
 *.swp
 *.html
+*.json
 !content/templates/*.html
 content/templates/cleaned_*
 content/config
