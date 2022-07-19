@@ -1,7 +1,7 @@
 ---
-Title:      Harden SSH
-Menuname:   Harden SSH
-Summary:    Harden your SSH connection
+Title:      Daily work with SSH
+Menuname:   Daily SSH
+Summary:    Optimize SSH for daily use
 Language:   en
 Keywords:   SSH, Harden, Key, Pair, Public, Private
 Authors:    René Zingerle, SSCP
@@ -19,10 +19,9 @@ template:   single-post.html
 robots:     index, follow
 ---
 
-# Harden SSH
+# Daily work with SSH
 
-As you may already know, SSH stands for [_Secure Shell_](https://en.wikipedia.org/wiki/Secure_Shell).
-So shouldn't it be _Secure_ already? [Please remember](../#!home) there is no real _Secure_ on the whole internet. So there are always ways for attackers to [compromise](https://us.battle.net/forums/en/d3/topic/5149544320) your service.
+This posts will help you configure SSH to use it more comfortable.
 
 ## Parameters on this site
 
