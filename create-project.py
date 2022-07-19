@@ -193,8 +193,8 @@ class Content():
 
                     # Change md to html and retrieve metadata
                     markdown_file = f.read()
-                    html_file = markdown.markdown(markdown_file, extensions=['meta'])
-                    md = markdown.Markdown( extensions = ['meta'], output_format='html5')
+                    html_file = markdown.markdown(markdown_file, extensions=['meta', 'tables'])
+                    md = markdown.Markdown( extensions = ['meta', 'tables'], output_format='html5')
                     html_file = md.convert(markdown_file)
 
                     try:
@@ -319,8 +319,8 @@ class Pages():
 
                         # Change md to html and retrieve metadata
                         article_markdown = f.read()
-                        article_html = markdown.markdown(article_markdown, extensions=['meta'])
-                        md = markdown.Markdown( extensions = ['meta'], output_format='html5')
+                        article_html = markdown.markdown(article_markdown, extensions=['meta', 'tables'])
+                        md = markdown.Markdown( extensions = ['meta', 'tables'], output_format='html5')
                         article_html = md.convert(article_markdown)
 
                         nakedfilename = re.sub('.md', '', file)
