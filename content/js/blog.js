@@ -1,7 +1,7 @@
 
 function readfile(dir, title, summary, image, alt) {
 
-  $('#blog-content').append("<a href='../" + dir + "'><h2>" + title + "</h2><div class='flex-container'><div><img src='" + image + "' alt='" + alt + "'></div><div><p>" + summary + "</p></div></div></a>");
+  $('#blog-content').append("<a href='../" + dir + "#light-mode'><h2>" + title + "</h2><div class='flex-container'><div><img src='" + image + "' alt='" + alt + "'></div><div><p>" + summary + "</p></div></div></a>");
 
 }
 
@@ -29,6 +29,10 @@ function readIndex() {
 
       });
     });
+
+    // Change color after everything loaded
+    // Needs to be positioned here
+    change_color();
   });
 
 

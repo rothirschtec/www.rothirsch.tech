@@ -22,12 +22,6 @@ $(document).ready ( function () {
   // Self developed analyzation disabled, using plausible.io instead
   // analyse_site_visitors();
 
-
-
-  // Trigger change_color function
-  change_color();
-
-
   // Manage blog
 
   if( $("#blog-content").length ) {
@@ -36,6 +30,13 @@ $(document).ready ( function () {
     //alert(language);
     //readfile('/en/blog/projects/sbc-cluster/sbc-wordpress-cluster---first-attempt.html', 'Test');
 
+  } else {
+
+    // Trigger change_color function
+    change_color();
+
   }
+
+
 
 });
