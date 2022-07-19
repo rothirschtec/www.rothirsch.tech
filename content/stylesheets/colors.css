@@ -72,6 +72,13 @@ div.no-cookies-message p {
   color:#fbfbfb;
 }
 
+body.light-color table {
+  color: #18191a;
+}
+body.dark-color table {
+  color: white;
+}
+
 .dot.light-color {
   background-color: #18191a;
 }

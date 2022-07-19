@@ -31,3 +31,8 @@
   text-align: center;
   line-height: 75px;
 }
+
+#single-post-content th,
+#single-post-content td {
+  padding:3px;
+}
