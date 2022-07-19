@@ -100,7 +100,7 @@ def main():
         replaceItem(destinationPath, '!!wuAlt', wuAlt)
         replaceItem(destinationPath, '!!wuBaseUrl', wuBaseUrl)
 
-        if writeUp is "post":
+        if writeUp == "post":
             replaceItem(destinationPath, '!!wuTemplate', f'single-{writeUp}.html')
         else:
             replaceItem(destinationPath, '!!wuTemplate', f'{writeUp}s.html')
