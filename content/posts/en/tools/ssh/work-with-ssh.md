@@ -7,8 +7,8 @@ Keywords:   SSH, Harden, Key, Pair, Public, Private
 Authors:    René Zingerle, SSCP
 TwitterA:   r9_rtec
 Timestamp:  2022-07-19_09:52:01
-Image:      content/images/icons/menu/3_Pillars_Rothirsch-Tech-GmbH.png
-Alt:        
+Image:      content/images/posts/tools/ssh/rothirsch-logo-ssh.svg
+Alt:        Banner with SSH
 Index:      0
 ChangeFreq: monthly
 Priority:   0.8
@@ -25,7 +25,7 @@ This posts will help you configure SSH to use it more comfortable.
 
 ## Parameters on this site
 
-test          | Test
+host          | address
 ------------- | -------------
 client        | 192.168.0.1  
 server        | 192.168.0.254
@@ -43,14 +43,10 @@ You can save your server information to your local host file
 
 A simple host configuration looks like
 
-<div class="output_highlight">
------------   -----------------------------
-_Host server_
-              _Hostname 192.168.0.254_
-              _Port 22_
-              _User root_
------------   -----------------------------
-</div>
+    Host server
+      Hostname 192.168.0.254
+      Port 22
+      User root
 
 
 If you save this configuration you can connect to the server with following command...

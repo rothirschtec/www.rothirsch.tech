@@ -39,7 +39,6 @@ fail2ban installieren wir direkt über die Repositories.
 ### Installation Repositories
 
     sudo apt-get update
-
     sudo apt-get install fail2ban
 
 Das wars schon ; )
@@ -48,11 +47,9 @@ Das wars schon ; )
 
 Es wird empfohlen, die Standard-Konfiguration nicht zu überschreiben. Stattdessen, ermöglicht es fail2ban mittels einer lokalen Datei die eigenen Einstellung dem Service zu übermitteln.
 
-cd /etc/fail2ban
-
-sudo cp jail.conf jail.local
-
-#vi jail.local
+    cd /etc/fail2ban
+    sudo cp jail.conf jail.local
+    vi jail.local
 
 In der Konfigurationsdatei, sind auf Englisch eigentlich alle Konfigurationsparameter beschrieben. In diesem Tutorial werden wir nur den SSH Tunnel sichern.
 
@@ -82,18 +79,13 @@ Mehr als 3 Versuche geben wir auch dem Administrator nicht ;)
 
 Nun müssen wir noch die ssh Parameter in der jail.local für den ssh Service ändern. Such nach dem Bereich "[ssh]" und ändert diesen auf eure Konfiguration. Hier könnt ihr auch das "maxretry" für diesen Dienst ändern.
 
-#vi /etc/fail2ban/jail.local
+    vi /etc/fail2ban/jail.local
 
     [ssh]
-
     enabled = true
-
     port = [EUER PORT]
-
     filter = sshd
-
     logpath = /var/log/auth.log
-
     maxretry = [EUER maxretry]
 
 ## Konfigurationen übernehmen

@@ -7,7 +7,7 @@ Keywords:   Clearfog, eMMC
 Authors:    René Zingerle, SSCP
 TwitterA:   r9_rtec
 Timestamp:  2022-07-19_16:56:56
-Image:      content/images/posts/sbcs/clearfog/Clearfog_Pro_case_front.png 
+Image:      content/images/posts/sbcs/clearfog/Clearfog_Pro_case_front.png
 Alt:        Clear Pro
 Index:      0
 ChangeFreq: monthly
@@ -63,11 +63,7 @@ login with _root_
 - Unplug power adapter
 - Set jumpers to **0 0 1 1 1**
 
-<div class=info_highlight>
-<a href="data/img/clearfog/Clearfog/Clearfog_Jumper_eMMC.jpg" data-title="Jumper eMMC" data-alt="" data-lightbox="Jumper">
-    <img class=img src="data/img/clearfog/Clearfog/Clearfog_Jumper_eMMC.jpg">
-</a>
-</div>
+![Jumper eMMC](content/images/posts/sbcs/clearfog/Clearfog_Jumper_eMMC.jpg "Jumper eMMC")
 
 - Plugin power jack
 

@@ -7,7 +7,7 @@ Keywords:   Banana Pi m64, Cluster, Singleboard Computer, SD Card, eMMC, Lab
 Authors:    René Zingerle, SSCP
 TwitterA:   r9_rtec
 Timestamp:  2022-07-13_14:12:28
-Image:      content/images/icons/menu/3_Pillars_Rothirsch-Tech-GmbH.png
+Image:      content/images/projects/sbc-cluster/Two-Clearfog-Pro-and-two-bpi-m64.jpg
 Alt:        Two Banana Pi m64, connected via a switch
 Index:      0
 ChangeFreq: monthly

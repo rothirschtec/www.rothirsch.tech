@@ -2,11 +2,18 @@
 #blog-content {
   position:absolute;
   width:90%; height: auto;
+  max-width: 1000px;
   left:5%;
 }
 
 #blog-content .flex-container img {
   max-width: 200px;
+}
+
+#single-post-content img {
+  border-radius: 5px;
+  max-width: 100%;
+  margin: 5px;
 }
 
 #blog-content a {
@@ -16,7 +23,10 @@
   padding-right:5px;
   border-radius: 5px;
 }
-#blog-content a:hover {
+.dark-color #blog-content a:hover {
+  background-color: #333!important;
+}
+.light-color #blog-content a:hover {
   background-color: #eee!important;
 }
 
