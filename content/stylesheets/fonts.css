@@ -27,6 +27,12 @@ h1 {
 h2 {
   margin-top: 40px;
 }
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
 @media screen
   and (orientation: portrait) {
     body {font-size:20px;}
