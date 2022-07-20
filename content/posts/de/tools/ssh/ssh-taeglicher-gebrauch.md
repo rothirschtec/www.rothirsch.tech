@@ -1,96 +1,90 @@
 ---
-Title:      Daily work with SSH
-Menuname:   Daily SSH
-Summary:    Optimize SSH for daily use
-Language:   en
-Keywords:   SSH, Harden, Key, Pair, Public, Private
+Title:      Ein Leitfaden für SSH
+Menuname:   Leitfaden: SSH
+Summary:    Ein paar Verbesserungen für deine SSH Konfiguration
+Language:   de
+Keywords:   ssh, verbessern
 Authors:    René Zingerle, SSCP
 TwitterA:   r9_rtec
-Timestamp:  2022-07-19_09:52:01
+Timestamp:  2022-07-20_09:52:01
 Image:      content/images/posts/tools/ssh/rothirsch-logo-ssh.svg
-Alt:        Banner with SSH
+Alt:        Das Beitragsbild zeigt ein Wappen mit dem Schriftzug SSH darauf
 Index:      0
 ChangeFreq: monthly
 Priority:   0.8
-base_url:   en/blog/tools/ssh/harden-ssh.html
+base_url:   de/blog/tools/ssh/ssh-taeglicher-gebrauch.html
 child:      none
 parent:     none
 template:   single-post.html
 robots:     index, follow
 ---
 
-# Daily work with SSH
+# Ein Leitfaden für SSH
 
-This posts will help you configure SSH to use it more comfortable.
+Dieser Beitrag zeigt dir wie du SSH verwendest.
 
-## Parameters on this site
+## Parameter die in diesem Leitfaden genutzt werden
 
-host          | address
+Rechner       | IP Adresse
 ------------- | -------------
-client        | 192.168.0.1  
-server        | 192.168.0.254
-mailserver    | 192.168.0.253
+Client        | 192.168.0.1  
+Server        | 192.168.0.254
+E-Mail-Server | 192.168.0.253
 
-## Connect to a ssh server
-Use a terminal like [tilix](https://gnunn1.github.io/tilix-web/) and connect with:
+## Verbindung mit SSH-Hosts aufbauen
 
     ssh 192.168.0.254
 
-### Save connections
-You can save your server information to your local host file
+### Verbindungen speichern
+
+Du kannst deine SSH-Hosts im .ssh Ordner deines Benutzers speichern
 
     ~/.ssh/config
 
-A simple host configuration looks like
+Die geringste Host Konfiguration schaut wie folgt aus:
 
-    Host server
+    Host HOST
       Hostname 192.168.0.254
       Port 22
       User root
 
+Mit dieser gespeicherten Host Konfiguration, kannst du dich nun mit der Host Bezeichnung verbinden.
 
-If you save this configuration you can connect to the server with following command...
+    ssh HOST
 
-    ssh server
+Es ist dir erlaubt, gespeicherte Parameter mit Neuen zu übrschreiben.
 
-...and you can change things for testing purpose
+    ssh user@server
 
-    ssh root@server
+## Konfiguration im laufenden Betrieb ändern
 
-You can see that SSH prefers your input and reads the host configuration if it reads something it doesn't know.
-
-## Configure SSH
-So, here are a few configurations you can add to your environment. You always have to think about what strategy is the best for you and if you are aware of any possible security flaw. So if you allow a SSH connection to a remote server from your local subnet and you have an employee who steals your [SSH Credentials](https://help.vaultpress.com/ssh/) and connects to it, you have failed. So decide wise!
-
-### Configuration files
-The main configuration file for SSH on a Debian system is:
+Die SSH-Hauptkonfigurationsdatei ist auf einem Debian-System folgende:
 
     /etc/ssh/sshd_config
 
-<div class="info_highlight">
-! Tip: If you are connected to a server and you change something in its ssh configuration, you can restart the server. Even if you change the port. The connection stays on this port because it's already allowed. So if you change your port and stay connected you can try to connect with a second SSH connection. If the port is closed or you simply misconfigured the configuration file, you can change the configuration with the first connection. But work fast! If the existing connection needs a reconnect because of an unknown parameter in the network, you might loose this connection.
-</div>
+> ! Tipp: Wenn du mit einem host  verbunden bist und etwas in den SSH-Konfigurationsdateien änderst, kannst du den SSH-Service neustarten. Auch wenn du den SSH-Port geändert hast. Die Verbindung bleibt bestehen, bis du dich abmeldest.
 
-### Restart the server
-You have to restart the server, if you want to activate the changes you have taken.
+### Service neustarten
+
+Um Änderungen zu übernehmen, musst du den SSH-Service am Host neustarten
 
     service ssh restart
 
 ## Change your SSH Port
-The standard Port for SSH is __22__. This is known by any script kiddie in the whole universe. So, if you get a lot of Brute Force Attacks and it is possible to change the Port, this is the way you can do it. Change following parameter within the main configuration file:
+
+Der Standard-Port für SSH lautet __22__. Das weiß jedes Skript-Kiddie im gesamten Universum. Wenn du also viele Brute-Force-Attacken auf deinem SSH-Port verzeichnest, kann es helfen den Port zu ändern. Suche in der Hauptkonfigurationsdatei nach der Zeile die den Port definiert:
 
     Port 22
 
-## Securely login without password to ssh
-It is possible to login to any SSH server without a password but with a [RSA key pair](https://www.youtube.com/watch?v=wXB-V_Keiu8)
+## Use SSH without a password
 
-Create the public/private RSA key pair with following command.
+It is possible to login to a SSH host without a password but using a [RSA key pair](https://www.youtube.com/watch?v=AQDCe585Lnc) instead.
+
+At first, create the public/private RSA key pair with following command:
 
     ssh-keygen -t rsa
 
-Just leave anything on the default value and don't use a password.
-
-If you use a password you will always get a password prompt for it.
+You will store the public key on remote hosts later on. After that, you are able to connect to all of these hosts, by using your private key. If someone will steal your private key, he or she will be able to connect to all of your hosts. So you can now decide if you will set a password for your private key. If not, you can follow along by clicking Enter until all questions are asked.
 
     Generating public/private rsa key pair.
     Enter file in which to save the key (/home/test/.ssh/id_rsa):
@@ -113,13 +107,12 @@ If you use a password you will always get a password prompt for it.
     |         ++++=*  |
     +----[SHA256]-----+
 
-In the next step you transfer the public key to a server of you choice
+Nun kannst du den öffentlichen Schlüssel auf einen Host deiner Wahl kopieren:
 
     ssh-copy-id -i ~/.ssh/id_rsa.pub -p 22 root@192.168.0.254
 
-You will get prompted for a password. The successful output looks something like this:
+Du wirst nach dem Passwort des Hosts gefragt. Anschließend wird der Schlüssel über das Netzwerk auf den Host kopiert:
 
-    ssh-copy-id -i ~/.ssh/id_rsa.pub -p 22 root@192.168.0.254
     /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/test/.ssh/id_rsa.pub"
     /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
     /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
