@@ -27,8 +27,6 @@ $(document).ready ( function () {
   if( $("#blog-content").length ) {
 
     readIndex();
-    //alert(language);
-    //readfile('/en/blog/projects/sbc-cluster/sbc-wordpress-cluster---first-attempt.html', 'Test');
 
   } else {
 

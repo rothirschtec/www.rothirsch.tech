@@ -13,16 +13,31 @@ function readIndex() {
   var dir;
   var title;
   var summary;
+  var lang;
+  var blang;
+  var image;
+  var alt;
+
+  var dereg = /\/de\//g;
+  var enreg = /\/en\//g;
+  if ( dereg.test(window.location.pathname) ) {
+    blang = "de";
+  } else {
+    blang = "en";
+  }
 
   $.getJSON( "/blog-index.json", function( data ) {
     $.each(data.posts, function() {
       $.each(this, function(key, val){
 
         if (key == "dir") { dir = val; }
+        if (key == "language") {
+          lang = val;
+        }
         if (key == "title") { title = val; }
         if (key == "summary") { summary = val; }
         if (key == "image") { image = val;}
-        if (key == "alt") {
+        if (key == "alt" && lang == blang) {
           alt = val;
           readfile(dir, title, summary, image, alt);
         }
