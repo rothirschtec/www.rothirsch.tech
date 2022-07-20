@@ -76,15 +76,15 @@ The standard Port for SSH is __22__. This is known by any script kiddie in the w
 
     Port 22
 
-## Verwende SSH ohne Passwort
+## Use SSH without a password
 
-Es ist möglich, sich an einem SSH-Host ohne Passwort aber mit einem [RSA Schlüssel Paar](https://www.youtube.com/watch?v=AQDCe585Lnc) anzumelden.
+It is possible to login to a SSH host without a password but using a [RSA key pair](https://www.youtube.com/watch?v=AQDCe585Lnc) instead.
 
-Als erstes erzeugst du das RSA Schlüssel Paar (öffentlich/privat) mit folgendem Befehl:
+At first, create the public/private RSA key pair with following command:
 
     ssh-keygen -t rsa
 
-Später wirst du deinen öffentlichen Schlüssel auf Remote-Hosts hinterlegen. Danach kannst du dich mit diesen Hosts über deinen privaten Schlüssel verbinden. Wenn jemaden diesen privaten Schlüssen stiehlt kann er sich mit allen deinen Hosts verbinden. Du kannst daher  jetzt entscheiden, ob du den privaten Schlüssel mit einem Passwort absichern möchtest. Wenn nicht, kannst du einfach alle Fragen mit Enter bestätigen.
+You will store the public key on remote hosts later on. After that, you are able to connect to all of these hosts, by using your private key. If someone will steal your private key, he or she will be able to connect to all of your hosts. So you can now decide if you will set a password for your private key. If not, you can follow along by clicking Enter until all questions are asked.
 
     Generating public/private rsa key pair.
     Enter file in which to save the key (/home/test/.ssh/id_rsa):
@@ -123,8 +123,8 @@ You will get prompted for a password. Afterwards the public key will be transfer
     Now try logging into the machine, with:   "ssh -p '22' 'root@192.168.30.254'"
     and check to make sure that only the key(s) you wanted were added.
 
-
 ## Disable root access with password
+
 After you have uploaded your public key to the remote server there is a useful and recommended option to use with SSH.
 
     PermitRootLogin yes

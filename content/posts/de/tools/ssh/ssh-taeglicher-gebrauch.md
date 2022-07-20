@@ -70,21 +70,22 @@ Um Änderungen zu übernehmen, musst du den SSH-Service am Host neustarten
 
     service ssh restart
 
-## Change your SSH Port
+## SSH Port ändern
 
 Der Standard-Port für SSH lautet __22__. Das weiß jedes Skript-Kiddie im gesamten Universum. Wenn du also viele Brute-Force-Attacken auf deinem SSH-Port verzeichnest, kann es helfen den Port zu ändern. Suche in der Hauptkonfigurationsdatei nach der Zeile die den Port definiert:
 
     Port 22
 
-## Use SSH without a password
+## Verwende SSH ohne Passwort
 
-It is possible to login to a SSH host without a password but using a [RSA key pair](https://www.youtube.com/watch?v=AQDCe585Lnc) instead.
+Es ist möglich, sich an einem SSH-Host ohne Passwort aber mit einem [RSA Schlüssel Paar](https://www.youtube.com/watch?v=AQDCe585Lnc) anzumelden.
 
-At first, create the public/private RSA key pair with following command:
+Als erstes erzeugst du das RSA Schlüssel Paar (öffentlich/privat) mit folgendem Befehl:
+
 
     ssh-keygen -t rsa
 
-You will store the public key on remote hosts later on. After that, you are able to connect to all of these hosts, by using your private key. If someone will steal your private key, he or she will be able to connect to all of your hosts. So you can now decide if you will set a password for your private key. If not, you can follow along by clicking Enter until all questions are asked.
+Später wirst du deinen öffentlichen Schlüssel auf Remote-Hosts hinterlegen. Danach kannst du dich mit diesen Hosts über deinen privaten Schlüssel verbinden. Wenn jemaden diesen privaten Schlüssen stiehlt kann er sich mit allen deinen Hosts verbinden. Du kannst daher  jetzt entscheiden, ob du den privaten Schlüssel mit einem Passwort absichern möchtest. Wenn nicht, kannst du einfach alle Fragen mit Enter bestätigen.
 
     Generating public/private rsa key pair.
     Enter file in which to save the key (/home/test/.ssh/id_rsa):
@@ -123,8 +124,8 @@ Du wirst nach dem Passwort des Hosts gefragt. Anschließend wird der Schlüssel 
     Now try logging into the machine, with:   "ssh -p '22' 'root@192.168.30.254'"
     and check to make sure that only the key(s) you wanted were added.
 
-
 ## Disable root access with password
+
 After you have uploaded your public key to the remote server there is a useful and recommended option to use with SSH.
 
     PermitRootLogin yes
