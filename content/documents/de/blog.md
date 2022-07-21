@@ -16,3 +16,5 @@ robots:     index, follow
 ---
 
 # Blog
+
+Neustart des RTec.-Blogs, durch Aktualisierung von Beiträgen aus dem alten System und wöchentlichen Veröffentlichungen. Das dem Blog zugrunde liegende System wird gerade entwickelt, deshalb gibt es auch noch keine spezielle Fähigkeiten wie eine Suchfunktion. Aber es wird daran gearbeitet.

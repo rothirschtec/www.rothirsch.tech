@@ -36,3 +36,7 @@
 .special_menu:hover {
     cursor:pointer;
 }
+
+.gitlink {
+  font-size:14px;
+}

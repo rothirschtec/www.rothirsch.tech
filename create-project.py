@@ -220,7 +220,6 @@ class Content():
 
                             path = str(f"{md.Meta['base_url']}").strip("['']")
 
-
                             template_content = self.replace_language(language, template_content)
                             template_content = self.replace_string('0!titleX', str(f"{md.Meta['title']}").strip("['']"), template_content)
                             template_content = self.replace_string('0!keywordsX', str(f"{md.Meta['keywords']}").strip("['']"), template_content)
@@ -262,10 +261,21 @@ class Content():
                             template_content = self.replace_other_language(language, template_content)
 
                             # Create menu
-
-                            # Break out for posts
                             if not re.search('/posts/', markdowns):
                                 template_content = self.replace_articles_menu(language, base, file, template_content)
+
+                            # Add git link
+                            gitpath = self.replace_string('.html', f'.md', path)
+                            gitpath = self.replace_string('/blog/', f'/', gitpath)
+
+                            if not re.search('/posts/', markdowns):
+
+                                template_content = self.replace_string('0!gitLinkX', f'<a class="gitlink" href="https://github.com/rothirschtec/www.rothirsch.tech/blob/main/content/articles/{gitpath}/">You can be an active part of this site by following this link to the underlying git repo.</a>', template_content)
+
+                            else:
+
+                                template_content = self.replace_string('0!gitLinkX', f'<a class="gitlink" href="https://github.com/rothirschtec/www.rothirsch.tech/tree/main/content/posts/{gitpath}/">You can be an active part of this site by following this link to the underlying git repo.</a>', template_content)
+
 
                             template_content = self.replace_documents_menu(path, language, template_content)
 
