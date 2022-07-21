@@ -16,7 +16,7 @@ base_url:   de/blog/tools/ssh/ssh-taeglicher-gebrauch.html
 child:      none
 parent:     none
 template:   single-post.html
-state:      development
+state:      ready
 robots:     index, follow
 ---
 
@@ -125,22 +125,19 @@ Du wirst nach dem Passwort des Hosts gefragt. Anschließend wird der Schlüssel 
     and check to make sure that only the key(s) you wanted were added.
 
 
-## Disable root access with password
-After you have uploaded your public key to the remote server there is a useful and recommended option to use with SSH.
+## Unterbinde root Anmeldungen mittels Passwort
 
-    PermitRootLogin yes
-
-This option has three parameter
-
-1. "yes", root user is able to login to the server with a password
-2. "no", root user is not allowed to login with SSH
-3. "without-password" or "prohibit-password", allows the root user to login but only with a RSA key pair
-
-So after uploading the public key you can login to the server and change the parameter
+Nachdem du den öffentlichen Schlüssel auf den Remote-Host geladen hast, gibt es eigentlich keinen Grund mehr dich mittels Passwort als Root anzumelden. Du kannst den folgenden Parameter auf __prohibit-password__ stellen:
 
     PermitRootLogin prohibit-password
 
-Restart the server and try to access it with a different host. If there is no public key on the server, the login prompt forces you to input a password but this never matches. So any attacker has to steal the private key of your user if they want an access to the server. A "guess" is not possible from there on!
+Das sind die Optionen die dieser Parameter anbietet:
+
+1. "yes", Der Benutzer *root* kann sich mit dem Passwort anmelden
+2. "no", Der Benutzer *root* kann sich gar nicht mehr über SSH anmelden
+3. "without-password" or "prohibit-password", erlaubt es dem Benutzer *root* sich mit einem RSA-Schlüssel-Paar anzumelden.
+
+Starte den SSH-Service neu und versuche dich mit einem Host zu verbinden auf dem der private Schlüssel nicht vorhanden ist (.ssh/id_rsa) und du wirst sehen, dass du dich nicht mehr anmelden kannst.
 
 ## Send a mail to the admin on ssh connection
 It is possible to send an e-mail directly after the login of an user.

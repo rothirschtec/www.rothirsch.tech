@@ -16,7 +16,7 @@ base_url:   en/blog/tools/ssh/ssh-daily-use.html
 child:      none
 parent:     none
 template:   single-post.html
-state:      development
+state:      ready
 robots:     index, follow
 ---
 
@@ -125,22 +125,19 @@ You will get prompted for a password. Afterwards the public key will be transfer
     and check to make sure that only the key(s) you wanted were added.
 
 
-## Disable root access with password
-After you have uploaded your public key to the remote server there is a useful and recommended option to use with SSH.
+## Prevent root login via password
 
-    PermitRootLogin yes
+After you have uploaded your public key to the remote host there is no real need to login via password, especially to the root user. You can change following parameter to prohibit-password:
 
-This option has three parameter
+    PermitRootLogin prohibit-password
+
+These are the options this parameter provides:    
 
 1. "yes", root user is able to login to the server with a password
 2. "no", root user is not allowed to login with SSH
 3. "without-password" or "prohibit-password", allows the root user to login but only with a RSA key pair
 
-So after uploading the public key you can login to the server and change the parameter
-
-    PermitRootLogin prohibit-password
-
-Restart the server and try to access it with a different host. If there is no public key on the server, the login prompt forces you to input a password but this never matches. So any attacker has to steal the private key of your user if they want an access to the server. A "guess" is not possible from there on!
+Restart the SSH service and try to access it with a different host which doesn't own the private key (.ssh/id_rsa) and you'll see that there is no way to login without the key.
 
 ## Send a mail to the admin on ssh connection
 It is possible to send an e-mail directly after the login of an user.
