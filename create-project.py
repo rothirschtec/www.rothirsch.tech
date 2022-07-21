@@ -197,93 +197,99 @@ class Content():
                     md = markdown.Markdown( extensions = ['meta', 'tables'], output_format='html5')
                     html_file = md.convert(markdown_file)
 
-                    try:
-                        tmp_file = str(f"{md.Meta['template']}").strip("['']")
-                        #print(newtemp)
-                    except:
-                        tmp_file = 'articles.html'
+                    state = str(f"{md.Meta['state']}").strip("['']")
 
-
-                    # Read in the file
-                    with open(f'{tmp_dir}cleaned_{tmp_file}', 'r') as template_html:
-                        template_content = template_html.read()
-
-                        # Replace the target string inside template_html with content from md
-                        template_content = template_content.replace('0!contentX', f'{html_file}')
-                        language = str(f"{md.Meta['language']}").strip("['']")
-
-                        path = str(f"{md.Meta['base_url']}").strip("['']")
-
-
-                        template_content = self.replace_language(language, template_content)
-                        template_content = self.replace_string('0!titleX', str(f"{md.Meta['title']}").strip("['']"), template_content)
-                        template_content = self.replace_string('0!keywordsX', str(f"{md.Meta['keywords']}").strip("['']"), template_content)
-                        template_content = self.replace_string('0x!#date#!0x', str(f"{md.Meta['timestamp']}").strip("['']"), template_content)
-                        template_content = self.replace_string('0!authorX', str(f"{md.Meta['authors']}").strip("['']"), template_content)
-                        template_content = self.replace_string('0!base_urlX', f'{Site.url}/{path}', template_content)
+                    if state == "ready":
 
                         try:
-                            twitter_author = str(f"{md.Meta['twittera']}").strip("['']")
+                            tmp_file = str(f"{md.Meta['template']}").strip("['']")
+                            #print(newtemp)
                         except:
-                            twitter_author = 'rothirschtech'
-
-                        template_content = self.replace_string('0!twitterauthorX', f'{twitter_author}', template_content)
-
-                        # Child/Parent pages
-                        try:
-                            child = str(f"{md.Meta['child']}").strip("['']")
-                            template_content = self.replace_string('0!childX', f'{child}', template_content)
-                        except:
-                            child = 'none'
-
-                        try:
-                            parent = str(f"{md.Meta['parent']}").strip("['']")
-                        except:
-                            parent = 'none'
-
-                        if child != 'none':
-                            template_content = self.replace_string('0!nextX', f'<a href="{child}">></a>', template_content)
-                        else:
-                            template_content = self.replace_string('0!nextX', '', template_content)
-
-                        if parent != 'none':
-                            template_content = self.replace_string('0!prevX', f'<a href="{parent}"><</a>', template_content)
-                        else:
-                            template_content = self.replace_string('0!prevX', '', template_content)
+                            tmp_file = 'articles.html'
 
 
-                        template_content = self.replace_string('0!descriptionX', str(f"{md.Meta['summary']}").strip("['']"), template_content)
-                        template_content = self.replace_other_language(language, template_content)
-
-                        # Create menu
-
-                        # Break out for posts
-                        if not re.search('/posts/', markdowns):
-                            template_content = self.replace_articles_menu(language, base, file, template_content)
-
-                        template_content = self.replace_documents_menu(path, language, template_content)
-
-                        # sitemap.xml
-                        self.save_sitemap_line(str(f"{md.Meta['timestamp']}").strip("['']"), str(f"{md.Meta['changefreq']}").strip("['']"), str(f"{md.Meta['priority']}").strip("['']"), f"{Site.url}/" + str(f"{md.Meta['base_url']}").strip("['']"), cwd)
-
-                        # Add blog-index
-                        if re.search('/posts/', markdowns):
-                            with open(f'{cwd}/blog-index.json', 'a') as file:
-                                file.write(' {"dir": "' + str(f"{md.Meta['base_url']}").strip("['']") + '", "title": "' + str(f"{md.Meta['title']}").strip("['']") + '", "summary": "' + str(f"{md.Meta['summary']}").strip("['']") + '", "language": "' + language + '", "image": "' + str(f"{md.Meta['image']}").strip("['']") + '", "alt": "' + str(f"{md.Meta['alt']}").strip("['']") + '" },')
+                        # Read in the file
+                        with open(f'{tmp_dir}cleaned_{tmp_file}', 'r') as template_html:
 
 
-                        # Shrink html
-                        template_content = re.sub('\s+(?=<)', '', template_content)
+                            template_content = template_html.read()
 
-                    # Write the file out again
-                    filename = f"{cwd}/{path}"
+                            # Replace the target string inside template_html with content from md
+                            template_content = template_content.replace('0!contentX', f'{html_file}')
+                            language = str(f"{md.Meta['language']}").strip("['']")
 
-                    os.makedirs(os.path.dirname(filename), exist_ok=True)
-                    with open(filename, 'w') as file:
-                        file.write(template_content)
+                            path = str(f"{md.Meta['base_url']}").strip("['']")
 
-                    if not os.path.exists(f'{os.path.dirname(filename)}/content'):
-                        self.symlink_rel(f'{cwd}/content', f'{os.path.dirname(filename)}/content')
+
+                            template_content = self.replace_language(language, template_content)
+                            template_content = self.replace_string('0!titleX', str(f"{md.Meta['title']}").strip("['']"), template_content)
+                            template_content = self.replace_string('0!keywordsX', str(f"{md.Meta['keywords']}").strip("['']"), template_content)
+                            template_content = self.replace_string('0x!#date#!0x', str(f"{md.Meta['timestamp']}").strip("['']"), template_content)
+                            template_content = self.replace_string('0!authorX', str(f"{md.Meta['authors']}").strip("['']"), template_content)
+                            template_content = self.replace_string('0!base_urlX', f'{Site.url}/{path}', template_content)
+
+                            try:
+                                twitter_author = str(f"{md.Meta['twittera']}").strip("['']")
+                            except:
+                                twitter_author = 'rothirschtech'
+
+                            template_content = self.replace_string('0!twitterauthorX', f'{twitter_author}', template_content)
+
+                            # Child/Parent pages
+                            try:
+                                child = str(f"{md.Meta['child']}").strip("['']")
+                                template_content = self.replace_string('0!childX', f'{child}', template_content)
+                            except:
+                                child = 'none'
+
+                            try:
+                                parent = str(f"{md.Meta['parent']}").strip("['']")
+                            except:
+                                parent = 'none'
+
+                            if child != 'none':
+                                template_content = self.replace_string('0!nextX', f'<a href="{child}">></a>', template_content)
+                            else:
+                                template_content = self.replace_string('0!nextX', '', template_content)
+
+                            if parent != 'none':
+                                template_content = self.replace_string('0!prevX', f'<a href="{parent}"><</a>', template_content)
+                            else:
+                                template_content = self.replace_string('0!prevX', '', template_content)
+
+
+                            template_content = self.replace_string('0!descriptionX', str(f"{md.Meta['summary']}").strip("['']"), template_content)
+                            template_content = self.replace_other_language(language, template_content)
+
+                            # Create menu
+
+                            # Break out for posts
+                            if not re.search('/posts/', markdowns):
+                                template_content = self.replace_articles_menu(language, base, file, template_content)
+
+                            template_content = self.replace_documents_menu(path, language, template_content)
+
+                            # sitemap.xml
+                            self.save_sitemap_line(str(f"{md.Meta['timestamp']}").strip("['']"), str(f"{md.Meta['changefreq']}").strip("['']"), str(f"{md.Meta['priority']}").strip("['']"), f"{Site.url}/" + str(f"{md.Meta['base_url']}").strip("['']"), cwd)
+
+                            # Add blog-index
+                            if re.search('/posts/', markdowns):
+                                with open(f'{cwd}/blog-index.json', 'a') as file:
+                                    file.write(' {"dir": "' + str(f"{md.Meta['base_url']}").strip("['']") + '", "title": "' + str(f"{md.Meta['title']}").strip("['']") + '", "summary": "' + str(f"{md.Meta['summary']}").strip("['']") + '", "language": "' + language + '", "image": "' + str(f"{md.Meta['image']}").strip("['']") + '", "alt": "' + str(f"{md.Meta['alt']}").strip("['']") + '" },')
+
+
+                            # Shrink html
+                            template_content = re.sub('\s+(?=<)', '', template_content)
+
+                        # Write the file out again
+                        filename = f"{cwd}/{path}"
+
+                        os.makedirs(os.path.dirname(filename), exist_ok=True)
+                        with open(filename, 'w') as file:
+                            file.write(template_content)
+
+                        if not os.path.exists(f'{os.path.dirname(filename)}/content'):
+                            self.symlink_rel(f'{cwd}/content', f'{os.path.dirname(filename)}/content')
 
 class Pages():
 

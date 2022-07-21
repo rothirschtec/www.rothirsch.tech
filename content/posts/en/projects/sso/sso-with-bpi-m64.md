@@ -16,6 +16,7 @@ base_url:   en/blog/projects/sso/sso-with-bpi-m64.html
 child:      none
 parent:     none
 template:   single-post.html
+state:      development
 robots:     index, follow
 ---
 
