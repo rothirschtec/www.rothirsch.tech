@@ -1,7 +1,9 @@
 
-h1 {
-    /*color:#7c0a02;*/
+.light-color h1 {
     color:#c2021c;
+}
+.dark-color h1 {
+    color:#FE6C7F;
 }
 .heading2 {
 	background-color: #ce2939;

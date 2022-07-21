@@ -13,6 +13,16 @@
 .single-post-content  {
   width:100%!important;
 }
+@media screen
+  and (orientation: portrait) {
+
+  .single-post-content  {
+    top:20px!important;
+  }
+  #blog-content .flex-container {
+    flex-direction: column;
+  }
+}
 
 #blog-content a {
   text-decoration: none;
