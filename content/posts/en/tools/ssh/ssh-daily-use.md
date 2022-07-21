@@ -55,7 +55,7 @@ With this host configuration stored, you're able to connect by simply passing th
 
 You are allowed to overwrite stored parameters with new ones.
 
-    ssh user@server
+    ssh -p 111 user@HOST
 
 ## Change configuration on the fly
 

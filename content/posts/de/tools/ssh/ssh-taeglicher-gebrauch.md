@@ -55,7 +55,7 @@ Mit dieser gespeicherten Host Konfiguration, kannst du dich nun mit der Host Bez
 
 Es ist dir erlaubt, gespeicherte Parameter mit Neuen zu übrschreiben.
 
-    ssh user@server
+    ssh -p 111 user@HOST
 
 ## Konfiguration im laufenden Betrieb ändern
 
