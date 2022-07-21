@@ -16,6 +16,7 @@ base_url:   !!wuBaseUrl
 child:      none
 parent:     none
 template:   !!wuTemplate
+state:      development
 robots:     index, follow
 ---
 
