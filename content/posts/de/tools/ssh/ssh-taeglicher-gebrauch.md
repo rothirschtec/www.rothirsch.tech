@@ -139,14 +139,13 @@ Das sind die Optionen die dieser Parameter anbietet:
 
 Starte den SSH-Service neu und versuche dich mit einem Host zu verbinden auf dem der private Schlüssel nicht vorhanden ist (.ssh/id_rsa) und du wirst sehen, dass du dich nicht mehr anmelden kannst.
 
-## Send a mail to the admin on ssh connection
-It is possible to send an e-mail directly after the login of an user.
+## Versende eine Mail bei einer SSH Anmeldung
 
-Therefore you have to change following file
+Ein möglicher Weg um eine E-Mail nach jedem gelungenen SSH Verbindungsaufbau zu senden wird hier gezeigt. Folgende Datei wird nach jedem erfolgreichen Verbindungsaufbau aufgerufen.
 
     /etc/ssh/sshrc
 
-Add following script code and install _sendemail_
+Dieser Skript sendet eine E-mail mit der IP Adresse von der aus der Benutzer sich anmeldet. Zusätzlich wird die Anmeldung ins Logsystem geschrieben.
 
     ip=`echo $SSH_CONNECTION | cut -d " " -f 1`
         # Get the IP Adress of the connected user

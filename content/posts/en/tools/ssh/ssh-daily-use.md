@@ -139,14 +139,13 @@ These are the options this parameter provides:
 
 Restart the SSH service and try to access it with a different host which doesn't own the private key (.ssh/id_rsa) and you'll see that there is no way to login without the key.
 
-## Send a mail to the admin on ssh connection
-It is possible to send an e-mail directly after the login of an user.
+## Send mail on SSH login
 
-Therefore you have to change following file
+A possible way to send an e-mail directly after the login of an user is shown here. The following file is invoked on each succesfull SSH login.
 
     /etc/ssh/sshrc
 
-Add following script code and install _sendemail_
+This script sends a mail including the IP address of the logged in user. Additionally the log system will also receive a log line.
 
     ip=`echo $SSH_CONNECTION | cut -d " " -f 1`
         # Get the IP Adress of the connected user
