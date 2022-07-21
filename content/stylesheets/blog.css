@@ -4,6 +4,7 @@
   max-width: 1000px;
   left: 50%;
   transform: translate(-50%);
+  margin-bottom:100px;
 }
 
 #blog-content .flex-container img {
@@ -18,6 +19,7 @@
 
   .single-post-content  {
     top:20px!important;
+    height:98%!important;
   }
   #blog-content .flex-container {
     flex-direction: column;

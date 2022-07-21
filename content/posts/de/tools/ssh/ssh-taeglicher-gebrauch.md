@@ -125,14 +125,8 @@ Du wirst nach dem Passwort des Hosts gefragt. Anschließend wird der Schlüssel 
     Now try logging into the machine, with:   "ssh -p '22' 'root@192.168.30.254'"
     and check to make sure that only the key(s) you wanted were added.
 
-<<<<<<< HEAD
 
 ## Unterbinde root Anmeldungen mittels Passwort
-=======
-## Disable root access with password
-
-After you have uploaded your public key to the remote server there is a useful and recommended option to use with SSH.
->>>>>>> cedccae63597ed24f9bda95496e804d592bc3f9c
 
 Nachdem du den öffentlichen Schlüssel auf den Remote-Host geladen hast, gibt es eigentlich keinen Grund mehr dich mittels Passwort als Root anzumelden. Du kannst den folgenden Parameter auf __prohibit-password__ stellen:
 

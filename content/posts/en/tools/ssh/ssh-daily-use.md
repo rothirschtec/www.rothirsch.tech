@@ -124,14 +124,8 @@ You will get prompted for a password. Afterwards the public key will be transfer
     Now try logging into the machine, with:   "ssh -p '22' 'root@192.168.30.254'"
     and check to make sure that only the key(s) you wanted were added.
 
-<<<<<<< HEAD
 
 ## Prevent root login via password
-=======
-## Disable root access with password
-
-After you have uploaded your public key to the remote server there is a useful and recommended option to use with SSH.
->>>>>>> cedccae63597ed24f9bda95496e804d592bc3f9c
 
 After you have uploaded your public key to the remote host there is no real need to login via password, especially to the root user. You can change following parameter to prohibit-password:
 
