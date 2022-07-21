@@ -20,19 +20,26 @@ body {
     line-height:1.9em;
 
 }
+
 h1 {
+  font-family: 'Acherus Militant'!important;
+  font-size:50px!important;
+	text-align:center!important;
   word-break: break-word;
   margin-bottom: 50px;
 }
 h2 {
+  font-family: 'AnonymousPro-Regular'!important;
   margin-top: 40px;
 }
 h3,
 h4,
 h5,
 h6 {
+  font-family: 'AnonymousPro-Regular'!important;
   font-weight: bold;
 }
+
 @media screen
   and (orientation: portrait) {
     body {font-size:20px;}
@@ -71,20 +78,6 @@ and (orientation: landscape) {
 .wms_txt
 {
     font-size:0.9em;
-}
-
-h1 {
-  font-family: 'Acherus Militant'!important;
-  font-size:50px!important;
-	text-align:center!important;
-}
-#txt h2 {
-    font-family: 'AnonymousPro-Regular'!important;
-}
-#txt h3,
-#txt h4,
-#txt h5 {
-    font-family: 'Quicksand'!important;
 }
 #txt h2 { font-size:115%; }
 #txt h3 { font-size:110%; }
