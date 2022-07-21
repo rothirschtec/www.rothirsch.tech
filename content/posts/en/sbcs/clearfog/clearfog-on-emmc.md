@@ -16,6 +16,7 @@ base_url:   en/blog/sbcs/clearfog/clearfog-on-emmc.html
 child:      none
 parent:     none
 template:   single-post.html
+state:      development
 robots:     index, follow
 ---
 

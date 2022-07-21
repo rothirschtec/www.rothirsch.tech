@@ -10,6 +10,7 @@ Index:      0
 ChangeFreq: yearly
 Priority:   0.0
 base_url:   de/index.html
+state:      ready
 robots:     index, follow
 ---
 

@@ -10,6 +10,7 @@ Index:      1
 ChangeFreq: yearly
 Priority:   0.0
 base_url:   en/contact.html
+state:      ready
 robots:     index, follow
 ---
 

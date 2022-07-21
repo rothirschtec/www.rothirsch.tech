@@ -10,6 +10,7 @@ Index:      3
 ChangeFreq: yearly
 Priority:   0.0
 base_url:   de/datenschutz.html
+state:      ready
 robots:     index, follow
 ---
 

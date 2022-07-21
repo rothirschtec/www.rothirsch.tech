@@ -10,5 +10,6 @@ Template:   articles.html
 ChangeFreq: never
 Priority:   0.0
 base_url:   index.html
+state:      ready
 robots:     index, follow
 ---

@@ -10,6 +10,7 @@ Index:      2
 ChangeFreq: yearly
 Priority:   0.0
 base_url:   en/legalnotice.html
+state:      ready
 robots:     index, follow
 ---
 

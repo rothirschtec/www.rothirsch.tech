@@ -15,6 +15,7 @@ Priority:   0.8
 base_url:   de/sicherheit.html
 child:      sicherheit/it_sicherheit.html
 parent:     none
+state:      ready
 robots:     index, follow
 ---
 

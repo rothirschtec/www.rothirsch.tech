@@ -15,6 +15,7 @@ Priority:   1.0
 base_url:   de/managedservices.html
 child:      managedservices/managedweb.html
 parent:     none
+state:      ready
 robots:     index, follow
 ---
 

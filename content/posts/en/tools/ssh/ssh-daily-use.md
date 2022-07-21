@@ -16,6 +16,7 @@ base_url:   en/blog/tools/ssh/ssh-daily-use.html
 child:      none
 parent:     none
 template:   single-post.html
+state:      development
 robots:     index, follow
 ---
 

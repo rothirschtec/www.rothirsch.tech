@@ -15,6 +15,7 @@ Priority:   1.0
 base_url:   en/security.html
 child:      none
 parent:     none
+state:      ready
 robots:     index, follow
 ---
 

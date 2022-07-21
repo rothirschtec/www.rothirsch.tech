@@ -10,5 +10,6 @@ Template:   posts.html
 ChangeFreq: never
 Priority:   0.0
 base_url:   blog.html
+state:      ready
 robots:     index, follow
 ---

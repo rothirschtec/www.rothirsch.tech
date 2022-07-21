@@ -11,6 +11,7 @@ ChangeFreq: yearly
 Priority:   0.0
 base_url:   en/blog.html
 template:   posts.html
+state:      ready
 robots:     index, follow
 ---
 

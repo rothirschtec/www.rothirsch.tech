@@ -11,6 +11,7 @@ Index:      none
 ChangeFreq: yearly
 Priority:   0.0
 base_url:   en/hall-of-fame.html
+state:      ready
 robots:     noindex, nofollow
 ---
 

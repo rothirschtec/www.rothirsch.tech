@@ -16,6 +16,7 @@ base_url:   de/blog/tools/ssh/ssh-taeglicher-gebrauch.html
 child:      none
 parent:     none
 template:   single-post.html
+state:      development
 robots:     index, follow
 ---
 

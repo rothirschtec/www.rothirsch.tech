@@ -15,6 +15,7 @@ Priority:   0.8
 base_url:   de/dasunternehmen.html
 child:      none
 parent:     none
+state:      ready
 robots:     index, follow
 ---
 
