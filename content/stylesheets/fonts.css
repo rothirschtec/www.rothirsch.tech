@@ -65,28 +65,31 @@ and (orientation: landscape) {
 }
 
 /* Reading */
-    .single-page p,
-    .siteInfo p,
-    #txt,
-    .wms_txt
-    {
-        font-size:0.9em;
-    }
+.single-page p,
+.siteInfo p,
+#txt,
+.wms_txt
+{
+    font-size:0.9em;
+}
 
-    h1 {
-      font-family: 'Acherus Militant'!important;
-      font-size:50px!important;
-    	text-align:center!important;
-    }
-    #txt h2,
-    #txt h3,
-    #txt h4 {
-        font-family: 'AnonymousPro-Regular'!important;
-    }
-    #txt h2 { font-size:115%; }
-    #txt h3 { font-size:110%; }
-    #txt h4 { font-size:105%; }
-    #txt h5 { font-size:100%; }
+h1 {
+  font-family: 'Acherus Militant'!important;
+  font-size:50px!important;
+	text-align:center!important;
+}
+#txt h2 {
+    font-family: 'AnonymousPro-Regular'!important;
+}
+#txt h3,
+#txt h4,
+#txt h5 {
+    font-family: 'Quicksand'!important;
+}
+#txt h2 { font-size:115%; }
+#txt h3 { font-size:110%; }
+#txt h4 { font-size:105%; }
+#txt h5 { font-size:100%; }
 
 #pages p {
     margin-left:4%!important;
