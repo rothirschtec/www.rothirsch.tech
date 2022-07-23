@@ -193,8 +193,8 @@ class Content():
 
                     # Change md to html and retrieve metadata
                     markdown_file = f.read()
-                    html_file = markdown.markdown(markdown_file, extensions=['meta', 'tables'])
-                    md = markdown.Markdown( extensions = ['meta', 'tables'], output_format='html5')
+                    html_file = markdown.markdown(markdown_file, extensions=['meta', 'tables', 'fenced_code'])
+                    md = markdown.Markdown( extensions = ['meta', 'tables', 'fenced_code'], output_format='html5')
                     html_file = md.convert(markdown_file)
 
                     state = str(f"{md.Meta['state']}").strip("['']")
@@ -265,6 +265,8 @@ class Content():
                                 # Create menu
                                 template_content = self.replace_articles_menu(language, base, file, template_content)
 
+                            else:
+
                                 # Add git link
                                 gitpath = self.replace_string('.html', f'.md', path)
                                 gitpath = self.replace_string('/blog/', f'/', gitpath)
@@ -330,8 +332,8 @@ class Pages():
 
                         # Change md to html and retrieve metadata
                         article_markdown = f.read()
-                        article_html = markdown.markdown(article_markdown, extensions=['meta', 'tables'])
-                        md = markdown.Markdown( extensions = ['meta', 'tables'], output_format='html5')
+                        article_html = markdown.markdown(article_markdown, extensions=['meta', 'tables', 'fenced_code'])
+                        md = markdown.Markdown( extensions = ['meta', 'tables', 'fenced_code'], output_format='html5')
                         article_html = md.convert(article_markdown)
 
                         nakedfilename = re.sub('.md', '', file)
