@@ -62,7 +62,7 @@ Es ist dir erlaubt, gespeicherte Parameter mit Neuen zu übrschreiben.
 
 Die SSH-Hauptkonfigurationsdatei ist auf einem Debian-System folgende:
 
-`/etc/ssh/sshd_config`
+    /etc/ssh/sshd_config
 
 > ! Tipp: Wenn du mit einem host  verbunden bist und etwas in den SSH-Konfigurationsdateien änderst, kannst du den SSH-Service neustarten. Auch wenn du den SSH-Port geändert hast. Die Verbindung bleibt bestehen, bis du dich abmeldest.
 

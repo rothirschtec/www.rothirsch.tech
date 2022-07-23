@@ -40,7 +40,7 @@ e-mail server | 192.168.0.253
 
 You can store and label your SSH hosts within your users .ssh directory
 
-  ~/.ssh/config
+    ~/.ssh/config
 
 The least host configuration looks like this:
 
@@ -61,7 +61,7 @@ You are allowed to overwrite stored parameters with new ones.
 
 The main configuration file for SSH on a Debian system is:
 
-  /etc/ssh/sshd_config
+    /etc/ssh/sshd_config
 
 > ! Tip: If you are connected to a host and you change something in inside the SSH configuration files, you can restart the SSH service. Even if you change the port. The connection stays as long as you log out.
 
