@@ -34,7 +34,8 @@ E-Mail-Server | 192.168.0.253
 
 ## Verbindung mit SSH-Hosts aufbauen
 
-    ssh 192.168.0.254
+`ssh 192.168.0.254`
+
 
 ### Verbindungen speichern
 
@@ -51,17 +52,17 @@ Die geringste Host Konfiguration schaut wie folgt aus:
 
 Mit dieser gespeicherten Host Konfiguration, kannst du dich nun mit der Host Bezeichnung verbinden.
 
-    ssh HOST
+`ssh HOST`
 
 Es ist dir erlaubt, gespeicherte Parameter mit Neuen zu übrschreiben.
 
-    ssh -p 111 user@HOST
+`ssh -p 111 user@HOST`
 
 ## Konfiguration im laufenden Betrieb ändern
 
 Die SSH-Hauptkonfigurationsdatei ist auf einem Debian-System folgende:
 
-    /etc/ssh/sshd_config
+`/etc/ssh/sshd_config`
 
 > ! Tipp: Wenn du mit einem host  verbunden bist und etwas in den SSH-Konfigurationsdateien änderst, kannst du den SSH-Service neustarten. Auch wenn du den SSH-Port geändert hast. Die Verbindung bleibt bestehen, bis du dich abmeldest.
 
@@ -69,7 +70,7 @@ Die SSH-Hauptkonfigurationsdatei ist auf einem Debian-System folgende:
 
 Um Änderungen zu übernehmen, musst du den SSH-Service am Host neustarten
 
-    service ssh restart
+`service ssh restart`
 
 ## SSH Port ändern
 
@@ -84,7 +85,7 @@ Es ist möglich, sich an einem SSH-Host ohne Passwort aber mit einem [RSA Schlü
 Als erstes erzeugst du das RSA Schlüssel Paar (öffentlich/privat) mit folgendem Befehl:
 
 
-    ssh-keygen -t rsa
+`ssh-keygen -t rsa`
 
 Später wirst du deinen öffentlichen Schlüssel auf Remote-Hosts hinterlegen. Danach kannst du dich mit diesen Hosts über deinen privaten Schlüssel verbinden. Wenn jemaden diesen privaten Schlüssen stiehlt kann er sich mit allen deinen Hosts verbinden. Du kannst daher  jetzt entscheiden, ob du den privaten Schlüssel mit einem Passwort absichern möchtest. Wenn nicht, kannst du einfach alle Fragen mit Enter bestätigen.
 
@@ -111,7 +112,7 @@ Später wirst du deinen öffentlichen Schlüssel auf Remote-Hosts hinterlegen. D
 
 Nun kannst du den öffentlichen Schlüssel auf einen Host deiner Wahl kopieren:
 
-    ssh-copy-id -i ~/.ssh/id_rsa.pub -p 22 root@192.168.0.254
+`ssh-copy-id -i ~/.ssh/id_rsa.pub -p 22 root@192.168.0.254`
 
 Du wirst nach dem Passwort des Hosts gefragt. Anschließend wird der Schlüssel über das Netzwerk auf den Host kopiert:
 

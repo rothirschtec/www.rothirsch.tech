@@ -34,13 +34,13 @@ e-mail server | 192.168.0.253
 
 ## Connect with SSH hosts
 
-    ssh 192.168.0.254
+`ssh 192.168.0.254`
 
 ### Save connections
 
 You can store and label your SSH hosts within your users .ssh directory
 
-    ~/.ssh/config
+  ~/.ssh/config
 
 The least host configuration looks like this:
 
@@ -51,17 +51,17 @@ The least host configuration looks like this:
 
 With this host configuration stored, you're able to connect by simply passing the hosts label.
 
-    ssh HOST
+`ssh HOST`
 
 You are allowed to overwrite stored parameters with new ones.
 
-    ssh -p 111 user@HOST
+`ssh -p 111 user@HOST`
 
 ## Change configuration on the fly
 
 The main configuration file for SSH on a Debian system is:
 
-    /etc/ssh/sshd_config
+  /etc/ssh/sshd_config
 
 > ! Tip: If you are connected to a host and you change something in inside the SSH configuration files, you can restart the SSH service. Even if you change the port. The connection stays as long as you log out.
 
@@ -69,7 +69,7 @@ The main configuration file for SSH on a Debian system is:
 
 You have to restart the server, if you want to activate the changes you have taken.
 
-    service ssh restart
+`service ssh restart`
 
 ## Change your SSH Port
 
@@ -83,7 +83,7 @@ It is possible to login to a SSH host without a password but using a [RSA key pa
 
 At first, create the public/private RSA key pair with following command:
 
-    ssh-keygen -t rsa
+`ssh-keygen -t rsa`
 
 You will store the public key on remote hosts later on. After that, you are able to connect to all of these hosts, by using your private key. If someone will steal your private key, he or she will be able to connect to all of your hosts. So you can now decide if you will set a password for your private key. If not, you can follow along by clicking Enter until all questions are asked.
 
@@ -110,7 +110,7 @@ You will store the public key on remote hosts later on. After that, you are able
 
 Now you can transfer the public key to a host of your choice:
 
-    ssh-copy-id -i ~/.ssh/id_rsa.pub -p 22 root@192.168.0.254
+`ssh-copy-id -i ~/.ssh/id_rsa.pub -p 22 root@192.168.0.254`
 
 You will get prompted for a password. Afterwards the public key will be transferred via the network to the host:
 
