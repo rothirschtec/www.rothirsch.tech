@@ -51,6 +51,11 @@ code {
   font-size: 16px!important;
 }
 
+code,
+strong {
+  margin-left: 5px;
+}
+
 @media screen
   and (orientation: portrait) {
     body {font-size:20px;}
