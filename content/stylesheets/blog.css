@@ -10,6 +10,20 @@
 .single-post-content  {
   width:100%!important;
 }
+.single-post-content blockquote,
+.single-post-content code {
+  text-align:left;
+}
+.single-post-content pre {
+  overflow-x: scroll;
+}
+.single-post-content code {
+  white-space: pre;
+
+}
+.single-post-content img {
+  border-radius: 5px;
+}
 @media screen
   and (orientation: portrait) {
 

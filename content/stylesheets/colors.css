@@ -19,12 +19,18 @@
     border-bottom:1px solid rgba(255,255,255,0.1);
 }
 .light-color h2,
-.light-color h3
+.light-color h3,
+.light-color h4,
+.light-color h5,
+.light-color h6
 {
   color:#18191a;
 }
 .dark-color h2,
-.dark-color h3
+.dark-color h3,
+.dark-color h4,
+.dark-color h5,
+.dark-color h6
 {
   color:#fbfbfb;
 }
