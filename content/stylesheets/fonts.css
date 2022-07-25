@@ -55,6 +55,9 @@ code,
 strong {
   margin-left: 5px;
 }
+pre code {
+  margin-left: 0px;
+}
 
 @media screen
   and (orientation: portrait) {
