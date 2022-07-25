@@ -87,6 +87,15 @@ body.dark-color table {
   color: white;
 }
 
+.light-color pre {
+  background-color: #f5f5f5;
+  color: #363334;
+}
+.dark-color pre {
+  background-color: #3a3a3a;
+  color: #eee;
+  border-color: #fe6c7f;
+}
 .dot.light-color {
   background-color: #18191a;
 }
