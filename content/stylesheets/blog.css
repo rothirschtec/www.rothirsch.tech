@@ -24,6 +24,11 @@
 .single-post-content img {
   border-radius: 5px;
 }
+.single-post-content .language-output   {
+  font-style: italic;
+  font-size: 12px!important;
+}
+
 @media screen
   and (orientation: portrait) {
 
