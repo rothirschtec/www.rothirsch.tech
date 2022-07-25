@@ -16,7 +16,7 @@ base_url:   en/blog/posts/sbcs/bpi-m64-uart-usb.html
 child:      none
 parent:     none
 template:   single-post.html
-state:      ready
+state:      development
 robots:     index, follow
 ---
 
