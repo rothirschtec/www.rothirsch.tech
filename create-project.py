@@ -271,7 +271,7 @@ class Content():
                                 gitpath = self.replace_string('.html', f'.md', path)
                                 gitpath = self.replace_string('/blog/', f'/', gitpath)
 
-                                template_content = self.replace_string('0!gitLinkX', f'<a class="gitlink" href="https://github.com/rothirschtec/www.rothirsch.tech/blob/main/content/articles/{gitpath}/">You can be an active part of this blog by following this link to the underlying git repo.</a>', template_content)
+                                template_content = self.replace_string('0!gitLinkX', f'<a class="gitlink" href="https://github.com/rothirschtec/www.rothirsch.tech/blob/main/content/posts/{gitpath}/">You can be an active part of this blog by following this link to the underlying git repo.</a>', template_content)
 
 
                             template_content = self.replace_documents_menu(path, language, template_content)
