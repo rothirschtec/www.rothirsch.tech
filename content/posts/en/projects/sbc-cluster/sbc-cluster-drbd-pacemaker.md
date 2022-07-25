@@ -38,10 +38,10 @@ First of all you need to configure both hosts. Download an image, install it and
 Download the image and sha file from Armbian https://www.armbian.com/bananapi-m64/ and check its integrity:
 
 > !Tip: You can also download it via the command line but you have to rename it correctly to check integrity:
-
-> wget https://redirect.armbian.com/region/EU/bananapim64/Bullseye_current
-
-> wget https://redirect.armbian.com/region/EU/bananapim64/Bullseye_current.sha
+<br>
+`wget https://redirect.armbian.com/region/EU/bananapim64/Bullseye_current`
+<br>
+`wget https://redirect.armbian.com/region/EU/bananapim64/Bullseye_current.sha`
 
 
     shasum -a 256 -c Armbian_*_bullseye_current_5.15.48.img.xz.sha
@@ -53,13 +53,13 @@ unxz Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img.xz
 sudo dd if=Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img of=/dev/<your device> bs=4M
 ```
 
-> !Tip: You can find further instructions about flashing Armbian to a sd card here: https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card
+> !Tip: You can find further instructions about flashing Armbian to a sd card here: [https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card](https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card)
 
 ### Preparing partitions
 
 The cluster for this post uses a 64GB - Class 10 sd card, so after flashing the image onto it you can create a second partition by decreasing the size of the first one. So after you have configured your device, you can use `fdisk` to resize your main partition and create the second one you'll use for _DRBD_.
 
-Prepare partitions by start using
+Prepare partitions by start using fdisk
 
     fdisk /dev/mmcblk0
 
@@ -266,14 +266,6 @@ apt install drbd-utils
 
     resource r0 {
 
-        startup {
-                # This tells DRBD to promote both nodes to 'primary' when this
-                # resource starts. However, we will let pacemaker control this
-                # so we comment it out, which tells DRBD to leave both nodes
-                # as secondary when drbd starts.
-                #become-primary-on both;
-        }
-
         net {
 
                 # This tells DRBD how to do a block-by-block verification of
@@ -336,24 +328,35 @@ apt install drbd-utils
 
 Overwrite partitions
 
-    dd if=/dev/zero of=/dev/sdaX bs=1M count=128
+    dd if=/dev/zero of=/dev/mmcblk0p2 bs=1M count=128
 
 Start drbd
 
     service drbd start
 
+Bring the device up on both hosts
+
+    service drbd reload
+    drbdadm create-md r0
+    drbdadm up r0
+
+Define one host as primary
+
+    drbdadm primary r0 --force
+
 You can watch what drbd does
 
     watch cat /proc/drbd
 
-Bring the device up on both hosts
+    version: 8.4.11 (api:1/proto:86-101)
+    srcversion: 78636C7E8D25CE9BA641329
+    0: cs:Connected ro:Secondary/Primary ds:UpToDate/UpToDate B r-----
+    ns:0 nr:635136 dw:9805764 dr:0 al:8 bm:0 lo:0 pe:0 ua:0 ap:0 ep:1 wo:d oos:0
 
-    drbdadm create-md r0
-    drbdadm up r0
 
-Define on host as primary
+Create a ext4 filesystem
 
-    drbdadm primary r0
+    mkfs.ext4 /dev/drbd0
 
 
 ## Pacemaker
@@ -479,3 +482,24 @@ Install everything
             }
             # ...
     }
+
+Now restart corosync and start pacemaker after it
+
+    service corosync restart
+    service pacemaker start
+
+Both hosts are online. We can check this with the command `crm_mon`.
+
+    Cluster Summary:
+      * Stack: corosync
+      * Current DC: ehjd.rothirsch.tech (version 2.0.5-ba59be7122) - partition with quorum
+      * Last updated: Mon Jul 25 18:13:22 2022
+      * Last change:  Mon Jul 25 18:12:59 2022 by hacluster via crmd on ehjd.rothirsch.tech
+      * 2 nodes configured
+      * 0 resource instances configured
+
+    Node List:
+      * Online: [ ehjd.rothirsch.tech ehje.rothirsch.tech ]
+
+    Active Resources:
+      * No active resources

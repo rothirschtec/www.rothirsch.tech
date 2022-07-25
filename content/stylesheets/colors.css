@@ -96,6 +96,15 @@ body.dark-color table {
   color: #eee;
   border-color: #fe6c7f;
 }
+.light-color p code {
+  background-color: #f5f5f5;
+  color: #363334;
+}
+.dark-color p code {
+  background-color: #3a3a3a;
+  color: #eee;
+  border-color: #fe6c7f;
+}
 .dot.light-color {
   background-color: #18191a;
 }
