@@ -46,20 +46,6 @@ h4 {font-size: 22px;}
 h5 {font-size: 18px;}
 h6 {font-size: 14px;}
 
-code {
-  font-family: 'AnonymousPro-Regular'!important;
-  font-size: 16px!important;
-}
-
-a,
-code,
-strong {
-  margin-left: 5px;
-}
-pre code {
-  margin-left: 0px;
-}
-
 @media screen
   and (orientation: portrait) {
     body {font-size:20px;}
@@ -105,12 +91,6 @@ and (orientation: landscape) {
     text-align:left;
 }
 
-/* Reading */
-
-/* -------------------- */
-
-
-/* DEVICES */
 
 #txt h1,
 #txt h2,
@@ -120,23 +100,25 @@ and (orientation: landscape) {
     text-align:right;
 }
 
-@media only screen
-  and (-webkit-min-device-pixel-ratio: 1)
-  and (orientation: landscape) {
-    body {font-size:240%;}
+/* Blog */
+code {
+  font-family: 'AnonymousPro-Regular'!important;
+  font-size: 16px!important;
 }
-@media only screen
-  and (-webkit-min-device-pixel-ratio: 2)
-  and (orientation: landscape) {
-    body {font-size:150%;}
+
+a,
+code,
+strong {
+  margin-left: 5px;
 }
-@media only screen
-  and (-webkit-min-device-pixel-ratio: 3)
-  and (orientation: landscape) {
-    body {font-size:150%;}
+pre code {
+  margin-left: 0px;
 }
-@media only screen
-  and (-webkit-min-device-pixel-ratio: 4)
-  and (orientation: landscape) {
-    body {font-size:150%;}
+.single-post-content .language-output   {
+  font-style: italic;
+  font-size: 12px!important;
+}
+.single-post-content .language-conf   {
+  font-family: 'Quicksand'!important;
+  font-size: 14px!important;
 }
