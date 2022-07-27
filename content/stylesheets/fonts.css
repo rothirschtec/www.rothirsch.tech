@@ -62,6 +62,9 @@ h6 {font-size: 14px;}
   font-size: 35px;
   font-family: 'Waterfall';
 }
+#gitlink {
+  text-align: right;
+}
 
 @media screen
   and (orientation: portrait) {
