@@ -10,6 +10,12 @@
     font-family: 'Quicksand';
     src: url('fonts/Quicksand/static/Quicksand-Light.ttf') format('truetype');
 }
+@font-face {
+    font-family: 'Waterfall';
+    src: url('fonts/Waterfall/Waterfall-Regular.ttf') format('truetype');
+}
+
+
 body {
 
     font-family: 'Quicksand';
@@ -45,6 +51,17 @@ h3 {font-size: 26px;}
 h4 {font-size: 22px;}
 h5 {font-size: 18px;}
 h6 {font-size: 14px;}
+
+#author {
+  margin-top:50px;
+  text-align: right;
+  font-size: 18px;
+}
+#authorname {
+  margin-left: 15px;
+  font-size: 35px;
+  font-family: 'Waterfall';
+}
 
 @media screen
   and (orientation: portrait) {
@@ -121,4 +138,25 @@ pre code {
 .single-post-content .language-conf   {
   font-family: 'Quicksand'!important;
   font-size: 14px!important;
+}
+
+@media only screen
+  and (-webkit-min-device-pixel-ratio: 1)
+  and (orientation: landscape) {
+    body {font-size:240%;}
+}
+@media only screen
+  and (-webkit-min-device-pixel-ratio: 2)
+  and (orientation: landscape) {
+    body {font-size:150%;}
+}
+@media only screen
+  and (-webkit-min-device-pixel-ratio: 3)
+  and (orientation: landscape) {
+    body {font-size:150%;}
+}
+@media only screen
+  and (-webkit-min-device-pixel-ratio: 4)
+  and (orientation: landscape) {
+    body {font-size:150%;}
 }

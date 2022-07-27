@@ -224,6 +224,9 @@ class Content():
                             template_content = self.replace_string('0!titleX', str(f"{md.Meta['title']}").strip("['']"), template_content)
                             template_content = self.replace_string('0!keywordsX', str(f"{md.Meta['keywords']}").strip("['']"), template_content)
                             template_content = self.replace_string('0x!#date#!0x', str(f"{md.Meta['timestamp']}").strip("['']"), template_content)
+                            dateshort = datetime.strptime(str(f"{md.Meta['timestamp']}").strip("['']"), '%Y-%m-%d_%H:%M:%S')
+                            template_content = self.replace_string('0x!#dateshort#!0x', dateshort.strftime("%d.%m.%Y"), template_content)
+
                             template_content = self.replace_string('0!authorX', str(f"{md.Meta['authors']}").strip("['']"), template_content)
                             template_content = self.replace_string('0!base_urlX', f'{Site.url}/{path}', template_content)
 
