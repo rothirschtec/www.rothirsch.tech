@@ -1,7 +1,10 @@
 
+
+.light-color blockquote p::first-letter,
 .light-color h1 {
     color:#c2021c;
 }
+.dark-color blockquote p::first-letter,
 .dark-color h1 {
     color:#FE6C7F;
 }
