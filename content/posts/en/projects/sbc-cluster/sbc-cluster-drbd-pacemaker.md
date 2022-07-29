@@ -1,5 +1,5 @@
 ---
-Title:      SBC cluster: DRBD + Pacemaker (Banana Pi m64)
+Title:      SBC cluster: DRBD, Pacemaker and corosync (Banana Pi m64)
 Menuname:   HA Cluster
 Summary:    High availability cluster on two Banana Pi m64
 Language:   en
@@ -20,14 +20,12 @@ state:      ready
 robots:     index, follow
 ---
 
-# SBC cluster: DRBD + Pacemaker (Banana Pi m64)
+# SBC cluster: DRBD, Pacemaker and corosync (Banana Pi m64)
 
-The goal of this post is, to show you how to configure a high available cluster configured with two single board computer. The cluster will use DRBD to replicate a storage system over the network. Both hosts will be connected through a Switch. So all incoming and outgoing connections and the storage replication will use the same subnet. Two other parts of the cluster are
+The goal of this post is to show you how to set up a high available cluster, configured with two single board computer. The cluster will use DRBD to replicate a storage system over the network. Both hosts will be connected through a switch. So all incoming and outgoing connections and the storage replication will use the same subnet. Two other parts of the cluster are:
 
 - Pacemaker for resource management
 - Corosync to provide good synchronicity
-
-> !Tip: DRBD provides RAID 1 over a network. Corosync provides clustering infrastructure such as membership, messaging and quorum. crm_attribute - query and update Pacemaker cluster options and node attributes.
 
 ![For illustration, this image shows two bpi-m64 positioned parallel to each other, connected to the network and the power plug](content/images/posts/projects/sbc-cluster/bpi-m64_cluster_of_two_plugged_in_to_network_and_power.jpg "bpi-m64 cluster of two")
 
@@ -35,16 +33,15 @@ The goal of this post is, to show you how to configure a high available cluster 
 
 First of all you need to configure both hosts. Download an image, install it and login via SSH. You need two partitions. One for the operating system and one that will be configured as _RAID1 over ethernet_.
 
-Download the image and sha file from Armbian https://www.armbian.com/bananapi-m64/ and check its integrity:
+Download the image and sha file from [Armbian](https://www.armbian.com/bananapi-64) and check its integrity:
 
-> !Tip: You can also download it via the command line but you have to rename it correctly to check integrity:
+> You can also download it via the command line but you have to rename it correctly to perform a valid integrity check:
 <br>
 `wget https://redirect.armbian.com/region/EU/bananapim64/Bullseye_current`
 <br>
 `wget https://redirect.armbian.com/region/EU/bananapim64/Bullseye_current.sha`
 
-
-    shasum -a 256 -c Armbian_*_bullseye_current_5.15.48.img.xz.sha
+    shasum -a 256 -c Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img.xz.sha
 
 Flash the image to the sd card:
 
@@ -53,17 +50,19 @@ unxz Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img.xz
 sudo dd if=Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img of=/dev/<your device> bs=4M
 ```
 
-> !Tip: You can find further instructions about flashing Armbian to a sd card here: [https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card](https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card)
+> You can find further instructions about flashing Armbian to a sd card here: [https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card](https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card)
 
-### Preparing partitions
+## Preparing partitions
 
-The cluster for this post uses a 64GB - Class 10 sd card, so after flashing the image onto it you can create a second partition by decreasing the size of the first one. So after you have configured your device, you can use `fdisk` to resize your main partition and create the second one you'll use for _DRBD_.
+For the cluster a 64GB - Class 10 sd card is used, so after flashing the image onto it you can create a second partition by decreasing the size of the first one. So after you have configured your device, you can use `fdisk` to resize your main partition and create the second one you'll use for _DRBD_.
+
+![Do visualize this you can see an image the shows a bar with 25% width section referencing to a partition for the system and 75% section that represents the share storage](content/images/posts/projects/sbc-cluster/Partitioning.png "bpi-m64 cluster of two")
 
 Prepare partitions by start using fdisk
 
     fdisk /dev/mmcblk0
 
-#### Show current partitions
+### Show current partitions
 
     Command (m for help): p
 
@@ -77,16 +76,18 @@ Prepare partitions by start using fdisk
     Device         Boot Start       End   Sectors  Size Id Type
     /dev/mmcblk0p1       8192 123469823 123461632 58.9G 83 Linux
 
-> !Tip: Be aware of the starting position of the partition. It shows you 8192 so you have to use this on resizing the partition
+> Be aware of the starting position of the partition. It shows you 8192 so you have to use this on resizing the partition
 
 
-#### Delete partition
+### Delete partition
+
+Yes you have to delete the partition first. But `fdisk` doesn't really delete the partition at this point. You have to confirm this later on.
 
     Command (m for help): d
     Selected partition 1
     Partition 1 has been deleted.
 
-#### Create first partition with a size of 16 Gigabyte
+### Create the first partition with a size of 16 Gigabyte
 
     Command (m for help): n
     Partition type
@@ -102,9 +103,11 @@ Prepare partitions by start using fdisk
 
     Do you want to remove the signature? [Y]es/[N]o: N
 
-#### Create the second partition
+> Don't forget to use the right starting point for  the first sector
 
-You have to find the end sector of the first partition:
+### Create the second partition with the rest size
+
+Print the latest configuration to find the end position of the first partition.
 
     Command (m for help): p
 
@@ -119,7 +122,7 @@ You have to find the end sector of the first partition:
     Device     Boot Start      End  Sectors Size Id Type
     /dev/sda1        8192 33562623 33554432  16G 83 Linux
 
-End shows you a value of 33562623 so increment it by one and create the next partition with it:
+The end column shows you a value of 33562623 so increment it by one and create the next partition with it:
 
     Command (m for help): n
     Partition type
@@ -132,23 +135,21 @@ End shows you a value of 33562623 so increment it by one and create the next par
 
     Created a new partition 2 of type 'Linux' and of size 43,5 GiB.
 
-#### Write anything to it
+### Write anything to it
 
-Most important, you have to write anything to the disk. Use __w__ to do that. Because we overwrite the partition where the operating system is installed on, you have to reboot the whole system before you can see the changes.
+Most important, you have to write anything to the disk. Use __w__ to do that.
 
     Command (m for help): w
     The partition table has been altered.
     Syncing disks
 
-### Startup the device
+### Boot the device
 
 Unplug the sd card, insert it into the device and start up:
 
-> !Tip: Use this link for further information about startup configuration options:  [https://docs.armbian.com/User-Guide_Getting-Started/#how-to-login](https://docs.armbian.com/User-Guide_Getting-Started/#how-to-login)
+> Use this link for further information about _first startup_ configuration _options_:  [https://docs.armbian.com/User-Guide_Getting-Started/#how-to-login](https://docs.armbian.com/User-Guide_Getting-Started/#how-to-login)
 
 Do this for both hosts then you're prepared for the rest of the post.
-
-
 
 ## DRBD
 
@@ -488,7 +489,7 @@ You can change the authmethod from `none` to following.:
     node.session.auth.username_in = stonith-iscsi-target
     node.session.auth.password_in = secretpass
 
-> !Tip: Don't forget to change password and secretpass to your configuration
+> Don't forget to change password and secretpass to your configuration
 
 And to let the server connect to the iSCSI target on reboot change following from `manual`
 
