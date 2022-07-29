@@ -52,6 +52,14 @@ h4 {font-size: 22px;}
 h5 {font-size: 18px;}
 h6 {font-size: 14px;}
 
+h1,
+h2,
+h3,
+h4 {
+    width:100%;
+    text-align:right;
+}
+
 #author {
   margin-top:50px;
   text-align: right;
@@ -112,13 +120,6 @@ and (orientation: landscape) {
 }
 
 
-#txt h1,
-#txt h2,
-#txt h3,
-#txt h4 {
-    width:100%;
-    text-align:right;
-}
 
 /* Blog */
 code {

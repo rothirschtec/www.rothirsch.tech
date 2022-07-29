@@ -334,13 +334,8 @@ Overwrite partitions
 
     dd if=/dev/zero of=/dev/mmcblk0p2 bs=1M count=128
 
-Start drbd
-
-    service drbd start
-
 Bring the device up on both hosts
 
-    service drbd reload
     drbdadm create-md r0
     drbdadm up r0
 
@@ -363,8 +358,192 @@ Create a ext4 filesystem
 
     mkfs.ext4 /dev/drbd0
 
+## STONITH
 
-## Pacemaker
+_Now it'll get really awesome._
+
+_Shoot the other node in the head [STONITH]_ is a technique that tries to prevent something called _split brain_. This is a problem which occurs if both nodes in the cluster think, that they are the new main node. This happens when they can't see each other on the network via corosync and this will shred your data on a shared filesystem immediately. So each node which thinks it has to be the main node will first shoot the other node in the head, before it'll become the main node. There are multiple so called fencing techniques. Some will sit directly inside your mainboard which you can execute over a separate ethernet connection like IPMI or you could power off the the device by controlling your UPS. The bpi-m64 doesn't have such features but you can use a third node that'll serve as a SAN to provide node information inside a LUN. If something went wrong the node will no more appear on the storage device and will commit suicide, means it will perform a hard reset.
+
+### The third node
+
+You can setup a high available node that'll provide you with LUN information via the iSCSI protocol. For this post two bpi-m2+ are used to share the LUN. You can use the explanation above and use the eMMC storage to create a DRBD storage device. There is a post in development which will show the configuration of the bpi-m2+ as SAN later on. In the meantime the installation of the SAN will be explained here in short.
+
+Install tgt
+
+    apt update
+    apt install tgt
+
+Create an image file on the shared storage
+
+    mkdir -p /media/stonith_luns
+    mount /dev/drbd0 /media/stonith_luns
+    dd if=/dev/zero of=/media/stonith_luns/ehjbc.rothirsch.tech.img count=0 bs=1 seek=15M
+
+Now you can tell tgt to use this image file
+
+    vi /etc/tgt/conf.d/ehjbc_iscsi.conf
+
+```conf
+<target iqn.ehjbc.rothirsch.tech:lun-ehjbc>
+
+     # Provided device as an iSCSI target
+     backing-store /media/stonith_luns/ehjbc.rothirsch.tech.img
+
+     # You can secure the connection with credentials.
+     # Change the password and secretpass to a secure one
+     incominguser stonith-iscsi-user password
+     outgoinguser stonith-iscsi-target secretpass
+
+</target>
+```
+
+Restart the service and check if your configuration is present
+
+    systemctl restart tgt
+    tgtadm --mode target --op show
+
+```output
+Target 1: iqn.ehjbc.rothirsch.tech:lun-ehjbc
+    System information:
+        Driver: iscsi
+        State: ready
+    I_T nexus information:
+        I_T nexus: 8
+            Initiator: iqn.1993-08.org.debian:01:82f5ba4c182 alias: ehjb.rothirsch.tech
+            Connection: 0
+                IP Address: 172.30.2.11
+        I_T nexus: 9
+            Initiator: iqn.1993-08.org.debian:01:c85f79c9ef9e alias: ehjc.rothirsch.tech
+            Connection: 0
+                IP Address: 172.30.2.12
+    LUN information:
+        LUN: 0
+            Type: controller
+            SCSI ID: IET     00010000
+            SCSI SN: beaf10
+            Size: 0 MB, Block size: 1
+            Online: Yes
+            Removable media: No
+            Prevent removal: No
+            Readonly: No
+            SWP: No
+            Thin-provisioning: No
+            Backing store type: null
+            Backing store path: None
+            Backing store flags:
+        LUN: 1
+            Type: disk
+            SCSI ID: IET     00010001
+            SCSI SN: beaf11
+            Size: 16 MB, Block size: 512
+            Online: Yes
+            Removable media: No
+            Prevent removal: No
+            Readonly: No
+            SWP: No
+            Thin-provisioning: No
+            Backing store type: rdwr
+            Backing store path: /media/stonith-luns/ehjbc.img
+            Backing store flags:
+    Account information:
+        stonith-iscsi-user
+        stonith-iscsi-target (outgoing)
+    ACL information:
+        ALL
+
+```
+
+> Thanks to:
+  <br>
+  [https://www.tecmint.com/setup-iscsi-target-and-initiator-on-debian-9/](https://www.tecmint.com/setup-iscsi-target-and-initiator-on-debian-9/)
+  <br>
+  [https://www.server-world.info/en/note?os=Debian_10&p=iscsi&f=2](https://www.server-world.info/en/note?os=Debian_10&p=iscsi&f=2)
+
+
+### The HA cluster
+
+Back on the high available cluster you'll connect to the SANs LUN first and configure the _Storage Based Death_ fencing technique next
+
+#### Connect to iSCSI Target
+
+Install tgt and connect to iSCSI target
+
+    apt-get update
+    apt-get install open-iscsi
+    iscsiadm -m discovery -t st -p <IP ADDRESS OF THE SAN>
+
+```output
+<IP ADDRESS OF THE SAN>:3260,1 iqn.ehjbc.rothirsch.tech:lun-ehjbc
+```
+
+Following file has been created we can configure it to our needs
+
+    vi /etc/iscsi/nodes/iqn.ehjbc.rothirsch.tech\:lun-ehjbc/<IP ADDRESS OF THE SAN>\,3260\,1/default
+
+You can change the authmethod from `none` to following.:
+
+    node.session.auth.authmethod = CHAP
+    node.session.auth.username = stonith-iscsi-user
+    node.session.auth.password = password
+    node.session.auth.username_in = stonith-iscsi-target
+    node.session.auth.password_in = secretpass
+
+> !Tip: Don't forget to change password and secretpass to your configuration
+
+And to let the server connect to the iSCSI target on reboot change following from `manual`
+
+    node.startup = automatic
+
+Now you can restart the service and check the iSCSI session
+
+    service open-iscsi restart
+    iscsiadm -m session
+
+```output
+tcp: [1] <IP ADDRESS OF THE SAN>:3260,1 iqn.ehjbc.rothirsch.tech:lun-ehjbc (non-flash)
+```
+
+On the iSCSI target you can check the connected devices
+
+    tgtadm --mode conn --op show --tid 1
+
+#### Configure SBD
+
+    apt install sbd fence-agents
+
+You have to change a few lines inside `/etc/default/sbd` from default to this:
+
+    # Find LUN with fdisk -l and add it here
+    SBD_DEVICE="/dev/sda"
+
+    SBD_WATCHDOG_DEV=/dev/watchdog
+
+
+Restart both devices and on one of both to following afterwards:
+
+    # Create the SBD device
+    sbd -d /dev/sda create
+
+    # Check what was written
+    sbd -d /dev/sda created
+
+    # Check if both nodes are listed
+    sbd -d /dev/sda list
+
+```output
+0 ehjb.rothirsch.tech clear
+1 ehjc.rothirsch.tech clear
+```
+
+
+> Thanks to:  
+<br>
+[https://kb.linbit.com/stonith-using-sbd-storage-based-death](https://kb.linbit.com/stonith-using-sbd-storage-based-death)
+<br>
+[https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/](https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/)
+
+
+## Pacemaker, Corosync - Active/Passive high availability cluster
 
 Install everything
 
@@ -512,3 +691,66 @@ Node List:
 Active Resources:
   * No active resources
 ```
+
+### Resource configuration
+
+Create a cluster configuration file
+
+    vim cib.txt
+
+```conf
+
+# Define both cluster nodes
+node 1: ehjb.rothirsch.tech
+node 2: ehjc.rothirsch.tech
+
+# Define the SBD for STONITH
+primitive f_sbd_node_ehjb stonith:fence_sbd devices=/dev/sda plug=ehjb.rohtirsch.tech
+primitive f_sbd_node_ehjc stonith:fence_sbd devices=/dev/sda plug=ehjc.rothirsch.tech
+
+# Create a shared IP address. The active node will use it.
+primitive FOIP IPaddr \
+        params ip=172.30.2.10 \
+        meta target-role=Started
+clone c_FOIP FOIP \
+        params master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
+
+# Tell corosync how to mount your DRBD shared storage on the active node
+primitive drbd0 ocf:linbit:drbd \
+        params drbd_resource=r0 \
+        op start interval=0 timeout=240 \
+        op stop interval=0 timeout=100
+primitive drbd_fs-r0 Filesystem \
+        params device="/dev/drbd0" directory="/media/r0" fstype=ext4
+ms drbd_ms-r0 drbd0 \
+        meta master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
+
+
+colocation co_FOIP_DRBD inf: c_FOIP drbd_fs-r0 drbd_ms-r0:Master
+
+order fs_after_drbd Mandatory: drbd_ms-r0:promote drbd_fs-r0:start
+```
+
+    # Stop all active resources
+    crm configure property stop-all-resources=true
+
+    # Replace all resources with the ones inside the cib.txt
+    crm configure load replace cib.txt
+
+
+
+#### Helpful commands
+
+    # export
+    crm configure show > cib.txt
+    # update
+    crm configure load update cib.txt
+
+    # stop service
+    crm resource stop fetchmail
+
+    # Clean up
+    crm resource cleanup dockerd
+
+    # Move
+    crm resource move dockerd <other-node>
