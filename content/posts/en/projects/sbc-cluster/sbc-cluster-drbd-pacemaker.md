@@ -29,7 +29,18 @@ The goal of this post is to show you how to set up a high available cluster, con
 
 ![For illustration, this image shows two bpi-m64 positioned parallel to each other, connected to the network and the power plug](content/images/posts/projects/sbc-cluster/bpi-m64_cluster_of_two_plugged_in_to_network_and_power.jpg "bpi-m64 cluster of two")
 
-## Install Armbian
+## Parameters used for this guideline
+
+hosts         | IP addresses
+------------- | -------------
+cluster-ab    | 172.30.2.15
+node-a        | 172.30.2.16
+node-b        | 172.30.2.17
+cluster-san   | 172.30.2.20
+san-a         | 172.30.2.21
+san-b         | 172.30.2.22
+
+## Install Armbian (on your PC)
 
 First of all you need to configure both hosts. Download an image, install it and login via SSH. You need two partitions. One for the operating system and one that will be configured as _RAID1 over ethernet_.
 
@@ -47,26 +58,28 @@ Flash the image to the sd card:
 
 ```
 unxz Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img.xz
-sudo dd if=Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img of=/dev/<your device> bs=4M
+sudo dd if=Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img of=/dev/<your-sdcard> bs=4M
 ```
 
 > You can find further instructions about flashing Armbian to a sd card here: [https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card](https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card)
 
-## Preparing partitions
+## Preparing partitions (on your PC)
 
 For the cluster a 64GB - Class 10 sd card is used, so after flashing the image onto it you can create a second partition by decreasing the size of the first one. So after you have configured your device, you can use `fdisk` to resize your main partition and create the second one you'll use for _DRBD_.
 
-![Do visualize this you can see an image the shows a bar with 25% width section referencing to a partition for the system and 75% section that represents the share storage](content/images/posts/projects/sbc-cluster/Partitioning.png "bpi-m64 cluster of two")
+![Do visualize this you can see an image the shows a bar with 25% width section referencing to a partition for the system and 75% section that represents the share storage](content/images/posts/projects/sbc-cluster/Partitioning.svg "bpi-m64 cluster of two")
 
 Prepare partitions by start using fdisk
 
-    fdisk /dev/mmcblk0
+    fdisk /dev/<your-sdcard>
+
+> Find your disks name before with `fdisk -l`
 
 ### Show current partitions
 
     Command (m for help): p
 
-    Disk /dev/mmcblk0: 59.48 GiB, 63864569856 bytes, 124735488 sectors
+    Disk /dev/<your-sdcard>: 59.48 GiB, 63864569856 bytes, 124735488 sectors
     Units: sectors of 1 * 512 = 512 bytes
     Sector size (logical/physical): 512 bytes / 512 bytes
     I/O size (minimum/optimal): 512 bytes / 512 bytes
@@ -74,7 +87,7 @@ Prepare partitions by start using fdisk
     Disk identifier: 0xe7f1ae5c
 
     Device         Boot Start       End   Sectors  Size Id Type
-    /dev/mmcblk0p1       8192 123469823 123461632 58.9G 83 Linux
+    /dev/<your-sdcard>p1       8192 123469823 123461632 58.9G 83 Linux
 
 > Be aware of the starting position of the partition. It shows you 8192 so you have to use this on resizing the partition
 
@@ -111,7 +124,7 @@ Print the latest configuration to find the end position of the first partition.
 
     Command (m for help): p
 
-    Disk /dev/sda: 59,48 GiB, 63864569856 bytes, 124735488 sectors
+    Disk /dev/<your-sdcard> 59,48 GiB, 63864569856 bytes, 124735488 sectors
     Disk model: 1081 SD         
     Units: sectors of 1 * 512 = 512 bytes
     Sector size (logical/physical): 512 bytes / 512 bytes
@@ -120,7 +133,7 @@ Print the latest configuration to find the end position of the first partition.
     Disk identifier: 0xe7f1ae5c
 
     Device     Boot Start      End  Sectors Size Id Type
-    /dev/sda1        8192 33562623 33554432  16G 83 Linux
+    /dev/<your-sdcard>p1       8192 33562623 33554432  16G 83 Linux
 
 The end column shows you a value of 33562623 so increment it by one and create the next partition with it:
 
@@ -151,83 +164,128 @@ Unplug the sd card, insert it into the device and start up:
 
 Do this for both hosts then you're prepared for the rest of the post.
 
+## Node configuration
+
+All nodes should know each other. You could use a DNS server for that purpose, but you can harden the set up a little more by add host definitions to the `/etc/hosts` file. You also have to set your IP address.
+
+### Node A
+
+#### node-a [vi /etc/hostenam]
+
+```conf
+noda-a
+```
+
+#### node-a [vi /etc/hosts]
+
+```conf
+127.0.0.1   localhost
+127.0.1.1   node-a
+172.30.2.17 node-b
+```
+
+#### node-a [Set static IP]
+
+    nmcli dev mod eth0 ipv4.addresses "172.30.2.16/24"
+    nmcli dev mod eth0 ipv4.gateway "172.30.2.254"
+    nmcli dev mod eth0 ipv4.dns "172.30.2.254"
+    nmcli dev mod eth0 ipv4.method manual
+    nmcli dev mod eth0 connection.autoconnect yes
+    systemctl restart NetworkManager
+
+### Node B
+
+#### node-b [vi /etc/hostenam]
+
+```conf
+noda-b
+```
+
+#### node-b [vi /etc/hosts]
+
+```conf
+127.0.0.1   localhost
+127.0.1.1   node-b
+172.30.2.16 node-a
+```
+
+#### node-b [Set static IP]
+
+    nmcli dev mod eth0 ipv4.addresses "172.30.2.17/24"
+    nmcli dev mod eth0 ipv4.gateway "172.30.2.254"
+    nmcli dev mod eth0 ipv4.dns "172.30.2.254"
+    nmcli dev mod eth0 ipv4.method manual
+    nmcli dev mod eth0 connection.autoconnect yes
+    systemctl restart NetworkManager
+
+### Reboot
+
+When all configuration is done, reboot both systems.
+
 ## DRBD
 
 Install everything
 
-```
-apt update
-apt install drbd-utils
-```
+    apt update
+    apt install drbd-utils
 
 ### /etc/drbd.d/global_common.conf
 
-The cluster works with this configuration but there are maybe better options that fit your purpose more. There is a well explained global.conf on github from DRBD's vendor company linbit: [https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example](https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example)
+You can define global configuration options for your cluster here. This is interesting if you have multiple resources. For this cluster you can let everything on default.
 
-```conf
-global {
-    usage-count no;
-}
-common {
-    startup {
-        wfc-timeout 300;
-        degr-wfc-timeout 120;
-        outdated-wfc-timeout 120;
-    }
-
-    options {
-        on-no-data-accessible io-error;
-    }
-
-    disk {
-        c-fill-target 100M;
-        c-max-rate   1100M;
-        c-plan-ahead    25;
-        c-min-rate     40M;
-    }
-
-    net {
-        protocol B;
-        after-sb-0pri discard-younger-primary;
-        after-sb-1pri discard-secondary;
-        after-sb-2pri disconnect;
-    }
-}
-```
+> There is a well explained global.conf on github from DRBD's vendor company linbit: [https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example](https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example)
 
 ### /etc/drbd.d/r0.conf
 
 ```conf
 resource r0 {
 
-    net {
-            verify-alg md5;
-            data-integrity-alg md5;
+    # B: write IO is reported as completed, if it has reached
+    #    local DISK and remote buffer cache.
+    #    * for most cases.
+    protocol B;
 
-            # Increase send buffer since we are on 1Gbs bonded network
-            sndbuf-size 2048k;
-            rcvbuf-size 1024k;
-            max-buffers 36k;
+    startup {
+
+      # Wait for connection timeout.
+      # The init script blocks the boot process until the resources
+      # are connected. This is so when the cluster manager starts later,
+      # it does not see a resource with internal split-brain.
+      # In case you want to limit the wait time, do it here.
+      # Default is 0, which means unlimited. Unit is seconds.
+      #
+      wfc-timeout         0;  ## Infinite!
+
+      # Wait for connection timeout if this node was a degraded cluster.
+      # In case a degraded cluster (= cluster with only one node left)
+      # is rebooted, this timeout value is used.
+      #
+      degr-wfc-timeout  120;  ## 2 minutes.
     }
     disk {
-            disk-flushes no;
-            md-flushes no;
-            disk-barrier no;
-            on-io-error detach;
-            al-extents 3389;
-    }
+      # if the lower level device reports io-error you have the choice of
+      #  "pass_on"  ->  Report the io-error to the upper layers.
+      #                 Primary   -> report it to the mounted file system.
+      #                 Secondary -> ignore it.
+      #  "call-local-io-error"
+      #	          ->  Call the script configured by the name "local-io-error".
+      #  "detach"   ->  The node drops its backing storage device, and
+      #                 continues in disk less mode.
+      #
+      on-io-error detach;
+    }  
 
-    on ehjb.rothirsch.tech {
-            device /dev/drbd0;
-            disk /dev/mmcblk0p2;
-            address 172.30.2.11:7788;
-            meta-disk internal;
+    on node-a {
+      device /dev/drbd0;
+      disk /dev/mmcblk0p2;
+      address 172.30.2.16:7788;
+      meta-disk internal;
     }
-    on ehjc.rothirsch.tech {
-            device /dev/drbd0;
-            disk /dev/mmcblk0p2;
-            address 172.30.2.12:7788;
-            meta-disk internal;
+    on node-b {
+      device /dev/drbd0;
+      disk /dev/mmcblk0p2;
+      address 172.30.2.17:7788;
+      meta-disk internal;
     }
 
   }
@@ -242,6 +300,21 @@ Overwrite partition table
 Bring the device up on both hosts
 
     drbdadm create-md r0
+
+```output
+You want me to create a v08 style flexible-size internal meta data block.
+There appears to be a v08 flexible-size internal meta data block
+already in place on /dev/mmcblk0p2 at byte offset 9391042560
+
+Do you really want to overwrite the existing meta-data?
+[need to type 'yes' to confirm] yes
+
+initializing activity log
+initializing bitmap (280 KB) to all zero
+Writing meta data...
+New drbd meta data block successfully created.
+```
+
     drbdadm up r0
 
 Define one host as primary
@@ -267,9 +340,10 @@ Create an ext4 filesystem
 
 _Now it'll get really awesome._
 
-_Shoot the other node in the head [STONITH]_ is a technique that tries to prevent something called _split brain_. This is a problem which occurs if both nodes in the cluster think, that they are the new main node. This happens when they can't see each other on the network via corosync and this will shred your data on a shared filesystem immediately. So each node which thinks it has to be the main node will first shoot the other node in the head, before it'll become the main node. There are multiple so called fencing techniques. Some will sit directly inside your mainboard which you can execute over a separate ethernet connection like IPMI or you could power off the the device by controlling your UPS. The bpi-m64 doesn't have such features but you can use a third node that'll serve as a SAN to provide node information inside a LUN. If something went wrong the node will no more appear on the storage device and will commit suicide, means it will perform a hard reset.
+_Shoot the other node in the head [STONITH]_ is a technique that tries to prevent something called _split brain_. This is a problem which occurs if both nodes in the cluster think, that they are the new main node. This happens when they can't see each other on the network via corosync and will shred your data on a shared filesystem immediately. So each node which thinks it has to be the main node will first shoot the other node in the head, before it'll become the main node. There are multiple STONITH fencing devices. Some will sit directly inside your mainboard which you can execute over a separate ethernet connection like IPMI or you could power off the the device by controlling your UPS. The bpi-m64 doesn't have such features but you can use a third-party node that'll serve as a SAN to provide node information inside a [LUN](https://www.minitool.com/lib/logical-unit-number.html). [Here you can find a very good explanation about Stonith and SBD](https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/) If something went wrong the node will no more appear on the device and will commit suicide, means it will perform a hard reset. [Here you can find more information about fencing and STONITH](https://clusterlabs.org/pacemaker/doc/crm_fencing.html)
 
-### The third node
+
+### The third-party node
 
 You can setup a high available node that'll provide you with LUN information via the iSCSI protocol. For this post two bpi-m2+ are used to share the LUN. You can use the explanation above and use the eMMC storage to create a DRBD storage device. There is a post in development which will show the configuration of the bpi-m2+ as SAN later on. In the meantime the installation of the SAN will be explained here in short.
 
@@ -367,11 +441,11 @@ Target 1: iqn.ehjbc.rothirsch.tech:lun-ehjbc
 
 ### The HA cluster
 
-Back on the high available cluster you'll connect to the SANs LUN first and configure the _Storage Based Death_ fencing technique next
+Back on the high available cluster you'll connect to the SAN's LUN first and configure the _Storage Based Death_ device next
 
 #### Connect to iSCSI Target
 
-Install tgt and connect to iSCSI target
+Install `open-iscsi` and connect to the iSCSI target
 
     apt-get update
     apt-get install open-iscsi
@@ -381,7 +455,7 @@ Install tgt and connect to iSCSI target
 <IP ADDRESS OF THE SAN>:3260,1 iqn.ehjbc.rothirsch.tech:lun-ehjbc
 ```
 
-Following file has been created we can configure it to our needs
+Following file has been created and you will configure it to your needs
 
     vi /etc/iscsi/nodes/iqn.ehjbc.rothirsch.tech\:lun-ehjbc/<IP ADDRESS OF THE SAN>\,3260\,1/default
 
@@ -393,9 +467,9 @@ You can change the authmethod from `none` to following.:
     node.session.auth.username_in = stonith-iscsi-target
     node.session.auth.password_in = secretpass
 
-> Don't forget to change password and secretpass to your configuration
+> Don't forget to change the password and secretpass to your configuration
 
-And to let the server connect to the iSCSI target on reboot change following from `manual`
+The server should connect to the iSCSI target on reboot so change `node.startup` to automatic
 
     node.startup = automatic
 
@@ -418,19 +492,20 @@ On the iSCSI target you can check the connected devices
 
 You have to change a few lines inside `/etc/default/sbd` from default to this:
 
-    # Find LUN with fdisk -l and add it here
+    # Find iSCSI target's device with fdisk -l and add it here
     SBD_DEVICE="/dev/sda"
 
+    # The watchdog device you need for this is present and already configured
     SBD_WATCHDOG_DEV=/dev/watchdog
 
 
-Restart both devices and on one of both to following afterwards:
+Restart both devices and on either of the two, do following afterwards:
 
     # Create the SBD device
     sbd -d /dev/sda create
 
     # Check what was written
-    sbd -d /dev/sda created
+    sbd -d /dev/sda dump
 
     # Check if both nodes are listed
     sbd -d /dev/sda list
@@ -440,12 +515,10 @@ Restart both devices and on one of both to following afterwards:
 1 ehjc.rothirsch.tech clear
 ```
 
-
 > Thanks to:  
 <br>
 [https://kb.linbit.com/stonith-using-sbd-storage-based-death](https://kb.linbit.com/stonith-using-sbd-storage-based-death)
 <br>
-[https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/](https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/)
 
 
 ## Pacemaker, Corosync - Active/Passive high availability cluster
