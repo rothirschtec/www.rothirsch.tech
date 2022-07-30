@@ -340,12 +340,19 @@ Create an ext4 filesystem
 
 _Now it'll get really awesome._
 
-_Shoot the other node in the head [STONITH]_ is a technique that tries to prevent something called _split brain_. This is a problem which occurs if both nodes in the cluster think, that they are the new main node. This happens when they can't see each other on the network via corosync and will shred your data on a shared filesystem immediately. So each node which thinks it has to be the main node will first shoot the other node in the head, before it'll become the main node. There are multiple STONITH fencing devices. Some will sit directly inside your mainboard which you can execute over a separate ethernet connection like IPMI or you could power off the the device by controlling your UPS. The bpi-m64 doesn't have such features but you can use a third-party node that'll serve as a SAN to provide node information inside a [LUN](https://www.minitool.com/lib/logical-unit-number.html). [Here you can find a very good explanation about Stonith and SBD](https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/) If something went wrong the node will no more appear on the device and will commit suicide, means it will perform a hard reset. [Here you can find more information about fencing and STONITH](https://clusterlabs.org/pacemaker/doc/crm_fencing.html)
+_Shoot the other node in the head [STONITH]_ is a technique that tries to prevent something called _split brain_. This is a problem which occurs if both nodes in the cluster think, that they are the new main node. This happens when they can't see each other on the network via corosync. By using shared storage this will shred your data immediately. So each node which thinks it has to be the main node will first shoot the other node in the head, before it'll become the main node. There are multiple STONITH fencing devices. Some will sit directly inside your mainboard which you can execute over a separate ethernet connection like IPMI or you could power off the device by controlling your UPS. The bpi-m64 doesn't have such features but it provides watchdog. With it you can use a third-party node that'll serve as a iSCSI-SAN to provide node information inside a [LUN](https://www.minitool.com/lib/logical-unit-number.html).  If something went wrong one node will write the other node that it should commit suicide. If a node loses the connection to the iSCSI-target it will also swallow the poison pill, means it will to a hard reset.
 
+> These articles provide well explained inforation about fencing, STONITH, SBD [Stonith Block Device] and timeouts:
+<br>
+- [https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/](https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/)
+<br>
+- [https://documentation.suse.com/sle-ha/15-SP1/html/SLE-HA-all/cha-ha-storage-protect.html](https://documentation.suse.com/sle-ha/15-SP1/html/SLE-HA-all/cha-ha-storage-protect.html)
+<br>
+- [https://clusterlabs.org/pacemaker/doc/crm_fencing.html](https://clusterlabs.org/pacemaker/doc/crm_fencing.html)
 
 ### The third-party node
 
-You can setup a high available node that'll provide you with LUN information via the iSCSI protocol. For this post two bpi-m2+ are used to share the LUN. You can use the explanation above and use the eMMC storage to create a DRBD storage device. There is a post in development which will show the configuration of the bpi-m2+ as SAN later on. In the meantime the installation of the SAN will be explained here in short.
+You can set up another high available node that'll provide you with LUN information via the iSCSI protocol. For this post two bpi-m2+ are used to share the LUN. You can use the explanation above and use the eMMC storage to create a DRBD storage device. There is a post in development which will show the configuration of the bpi-m2+ as iSCSI-SAN later on. In the meantime the installation of the iSCSI-SAN will be explained here in short.
 
 Install tgt
 
@@ -356,17 +363,17 @@ Create an image file on the shared storage
 
     mkdir -p /media/stonith_luns
     mount /dev/drbd0 /media/stonith_luns
-    dd if=/dev/zero of=/media/stonith_luns/ehjbc.rothirsch.tech.img count=0 bs=1 seek=15M
+    dd if=/dev/zero of=/media/stonith_luns/cluster-ab.img count=0 bs=1 seek=15M
 
 Now you can tell tgt to use this image file
 
-    vi /etc/tgt/conf.d/ehjbc_iscsi.conf
+    vi /etc/tgt/conf.d/cluster-ab_iscsi.conf
 
 ```conf
-<target iqn.ehjbc.rothirsch.tech:lun-ehjbc>
+<target iqn.cluster-ab:lun-ab>
 
      # Provided device as an iSCSI target
-     backing-store /media/stonith_luns/ehjbc.rothirsch.tech.img
+     backing-store /media/stonith_luns/cluster-ab.img
 
      # You can secure the connection with credentials.
      # Change the password and secretpass to a secure one
@@ -382,19 +389,19 @@ Restart the service and check if your configuration is present
     tgtadm --mode target --op show
 
 ```output
-Target 1: iqn.ehjbc.rothirsch.tech:lun-ehjbc
+Target 1: iqn.cluster-ab:lun-ab
     System information:
         Driver: iscsi
         State: ready
     I_T nexus information:
         I_T nexus: 8
-            Initiator: iqn.1993-08.org.debian:01:82f5ba4c182 alias: ehjb.rothirsch.tech
+            Initiator: iqn.1993-08.org.debian:01:82f5ba4c182 alias: node-a
             Connection: 0
-                IP Address: 172.30.2.11
+                IP Address: 172.30.2.16
         I_T nexus: 9
-            Initiator: iqn.1993-08.org.debian:01:c85f79c9ef9e alias: ehjc.rothirsch.tech
+            Initiator: iqn.1993-08.org.debian:01:c85f79c9ef9e alias: node-b
             Connection: 0
-                IP Address: 172.30.2.12
+                IP Address: 172.30.2.17
     LUN information:
         LUN: 0
             Type: controller
@@ -422,7 +429,7 @@ Target 1: iqn.ehjbc.rothirsch.tech:lun-ehjbc
             SWP: No
             Thin-provisioning: No
             Backing store type: rdwr
-            Backing store path: /media/stonith-luns/ehjbc.img
+            Backing store path: /media/stonith-luns/cluster-ab.img
             Backing store flags:
     Account information:
         stonith-iscsi-user
@@ -441,23 +448,19 @@ Target 1: iqn.ehjbc.rothirsch.tech:lun-ehjbc
 
 ### The HA cluster
 
-Back on the high available cluster you'll connect to the SAN's LUN first and configure the _Storage Based Death_ device next
-
-#### Connect to iSCSI Target
-
-Install `open-iscsi` and connect to the iSCSI target
+Back on the high available cluster you'll connect to the iSCSI-Target first and configure the _STONITH Block Device_ next. Install `open-iscsi` and connect to the iSCSI target:
 
     apt-get update
     apt-get install open-iscsi
-    iscsiadm -m discovery -t st -p <IP ADDRESS OF THE SAN>
+    iscsiadm -m discovery -t st -p 172.30.2.20
 
 ```output
-<IP ADDRESS OF THE SAN>:3260,1 iqn.ehjbc.rothirsch.tech:lun-ehjbc
+172.30.2.20:3260,1 iqn.cluster-ab:lun-ab
 ```
 
 Following file has been created and you will configure it to your needs
 
-    vi /etc/iscsi/nodes/iqn.ehjbc.rothirsch.tech\:lun-ehjbc/<IP ADDRESS OF THE SAN>\,3260\,1/default
+    vi /etc/iscsi/nodes/iqn.cluster-ab\:lun-ab/172.30.2.20\,3260\,1/default
 
 You can change the authmethod from `none` to following.:
 
@@ -479,7 +482,7 @@ Now you can restart the service and check the iSCSI session
     iscsiadm -m session
 
 ```output
-tcp: [1] <IP ADDRESS OF THE SAN>:3260,1 iqn.ehjbc.rothirsch.tech:lun-ehjbc (non-flash)
+tcp: [1] 172.30.2.20:3260,1 iqn.ehjbc.rothirsch.tech:lun-ehjbc (non-flash)
 ```
 
 On the iSCSI target you can check the connected devices
@@ -501,8 +504,8 @@ You have to change a few lines inside `/etc/default/sbd` from default to this:
 
 Restart both devices and on either of the two, do following afterwards:
 
-    # Create the SBD device
-    sbd -d /dev/sda create
+    # Create the SBD device with timeouts for watchdog and sbd
+    sbd -d /dev/sda -4 20 -1 10 create
 
     # Check what was written
     sbd -d /dev/sda dump
