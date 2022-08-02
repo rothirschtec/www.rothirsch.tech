@@ -363,19 +363,6 @@ Create an image file on the shared storage
 
     mkdir -p /media/stonith_luns
     mount /dev/drbd0 /media/stonith_luns
-<<<<<<< HEAD
-    dd if=/dev/zero of=/media/stonith_luns/noda-ac.rothirsch.tech.img count=0 bs=1 seek=15M
-
-Now you can tell tgt to use this image file
-
-    vi /etc/tgt/conf.d/noda-ac_iscsi.conf
-
-```conf
-<target iqn.noda-ac.rothirsch.tech:lun-noda-ac>
-
-     # Provided device as an iSCSI target
-     backing-store /media/stonith_luns/noda-ac.rothirsch.tech.img
-=======
     dd if=/dev/zero of=/media/stonith_luns/cluster-ab.img count=0 bs=1 seek=15M
 
 Now you can tell tgt to use this image file
@@ -387,7 +374,6 @@ Now you can tell tgt to use this image file
 
      # Provided device as an iSCSI target
      backing-store /media/stonith_luns/cluster-ab.img
->>>>>>> dc365455e824e32188d67e4d5ae21aa2dc5db6ce
 
      # You can secure the connection with credentials.
      # Change the password and secretpass to a secure one
@@ -403,11 +389,7 @@ Restart the service and check if your configuration is present
     tgtadm --mode target --op show
 
 ```output
-<<<<<<< HEAD
-Target 1: iqn.noda-ac.rothirsch.tech:lun-noda-ac
-=======
 Target 1: iqn.cluster-ab:lun-ab
->>>>>>> dc365455e824e32188d67e4d5ae21aa2dc5db6ce
     System information:
         Driver: iscsi
         State: ready
@@ -447,11 +429,7 @@ Target 1: iqn.cluster-ab:lun-ab
             SWP: No
             Thin-provisioning: No
             Backing store type: rdwr
-<<<<<<< HEAD
-            Backing store path: /media/stonith-luns/noda-ac.img
-=======
             Backing store path: /media/stonith-luns/cluster-ab.img
->>>>>>> dc365455e824e32188d67e4d5ae21aa2dc5db6ce
             Backing store flags:
     Account information:
         stonith-iscsi-user
@@ -477,20 +455,12 @@ Back on the high available cluster you'll connect to the iSCSI-Target first and 
     iscsiadm -m discovery -t st -p 172.30.2.20
 
 ```output
-<<<<<<< HEAD
-172.30.2.20:3260,1 iqn.noda-ac.rothirsch.tech:lun-noda-ac
-=======
 172.30.2.20:3260,1 iqn.cluster-ab:lun-ab
->>>>>>> dc365455e824e32188d67e4d5ae21aa2dc5db6ce
 ```
 
 Following file has been created and you will configure it to your needs
 
-<<<<<<< HEAD
-    vi /etc/iscsi/nodes/iqn.noda-ac.rothirsch.tech\:lun-noda-ac/172.30.2.20\,3260\,1/default
-=======
     vi /etc/iscsi/nodes/iqn.cluster-ab\:lun-ab/172.30.2.20\,3260\,1/default
->>>>>>> dc365455e824e32188d67e4d5ae21aa2dc5db6ce
 
 You can change the authmethod from `none` to following.:
 
@@ -512,11 +482,7 @@ Now you can restart the service and check the iSCSI session
     iscsiadm -m session
 
 ```output
-<<<<<<< HEAD
 tcp: [1] 172.30.2.20:3260,1 iqn.noda-ac.rothirsch.tech:lun-noda-ac (non-flash)
-=======
-tcp: [1] 172.30.2.20:3260,1 iqn.ehjbc.rothirsch.tech:lun-ehjbc (non-flash)
->>>>>>> dc365455e824e32188d67e4d5ae21aa2dc5db6ce
 ```
 
 On the iSCSI target you can check the connected devices
