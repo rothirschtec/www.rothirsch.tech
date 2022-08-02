@@ -356,17 +356,17 @@ Create an image file on the shared storage
 
     mkdir -p /media/stonith_luns
     mount /dev/drbd0 /media/stonith_luns
-    dd if=/dev/zero of=/media/stonith_luns/ehjbc.rothirsch.tech.img count=0 bs=1 seek=15M
+    dd if=/dev/zero of=/media/stonith_luns/noda-ac.rothirsch.tech.img count=0 bs=1 seek=15M
 
 Now you can tell tgt to use this image file
 
-    vi /etc/tgt/conf.d/ehjbc_iscsi.conf
+    vi /etc/tgt/conf.d/noda-ac_iscsi.conf
 
 ```conf
-<target iqn.ehjbc.rothirsch.tech:lun-ehjbc>
+<target iqn.noda-ac.rothirsch.tech:lun-noda-ac>
 
      # Provided device as an iSCSI target
-     backing-store /media/stonith_luns/ehjbc.rothirsch.tech.img
+     backing-store /media/stonith_luns/noda-ac.rothirsch.tech.img
 
      # You can secure the connection with credentials.
      # Change the password and secretpass to a secure one
@@ -382,17 +382,17 @@ Restart the service and check if your configuration is present
     tgtadm --mode target --op show
 
 ```output
-Target 1: iqn.ehjbc.rothirsch.tech:lun-ehjbc
+Target 1: iqn.noda-ac.rothirsch.tech:lun-noda-ac
     System information:
         Driver: iscsi
         State: ready
     I_T nexus information:
         I_T nexus: 8
-            Initiator: iqn.1993-08.org.debian:01:82f5ba4c182 alias: ehjb.rothirsch.tech
+            Initiator: iqn.1993-08.org.debian:01:82f5ba4c182 alias: node-a
             Connection: 0
                 IP Address: 172.30.2.11
         I_T nexus: 9
-            Initiator: iqn.1993-08.org.debian:01:c85f79c9ef9e alias: ehjc.rothirsch.tech
+            Initiator: iqn.1993-08.org.debian:01:c85f79c9ef9e alias: node-b
             Connection: 0
                 IP Address: 172.30.2.12
     LUN information:
@@ -422,7 +422,7 @@ Target 1: iqn.ehjbc.rothirsch.tech:lun-ehjbc
             SWP: No
             Thin-provisioning: No
             Backing store type: rdwr
-            Backing store path: /media/stonith-luns/ehjbc.img
+            Backing store path: /media/stonith-luns/noda-ac.img
             Backing store flags:
     Account information:
         stonith-iscsi-user
@@ -449,15 +449,15 @@ Install `open-iscsi` and connect to the iSCSI target
 
     apt-get update
     apt-get install open-iscsi
-    iscsiadm -m discovery -t st -p <IP ADDRESS OF THE SAN>
+    iscsiadm -m discovery -t st -p 172.30.2.20
 
 ```output
-<IP ADDRESS OF THE SAN>:3260,1 iqn.ehjbc.rothirsch.tech:lun-ehjbc
+172.30.2.20:3260,1 iqn.noda-ac.rothirsch.tech:lun-noda-ac
 ```
 
 Following file has been created and you will configure it to your needs
 
-    vi /etc/iscsi/nodes/iqn.ehjbc.rothirsch.tech\:lun-ehjbc/<IP ADDRESS OF THE SAN>\,3260\,1/default
+    vi /etc/iscsi/nodes/iqn.noda-ac.rothirsch.tech\:lun-noda-ac/172.30.2.20\,3260\,1/default
 
 You can change the authmethod from `none` to following.:
 
@@ -479,7 +479,7 @@ Now you can restart the service and check the iSCSI session
     iscsiadm -m session
 
 ```output
-tcp: [1] <IP ADDRESS OF THE SAN>:3260,1 iqn.ehjbc.rothirsch.tech:lun-ehjbc (non-flash)
+tcp: [1] 172.30.2.20:3260,1 iqn.noda-ac.rothirsch.tech:lun-noda-ac (non-flash)
 ```
 
 On the iSCSI target you can check the connected devices
@@ -511,8 +511,8 @@ Restart both devices and on either of the two, do following afterwards:
     sbd -d /dev/sda list
 
 ```output
-0 ehjb.rothirsch.tech clear
-1 ehjc.rothirsch.tech clear
+0 node-a clear
+1 node-b clear
 ```
 
 > Thanks to:  
@@ -629,7 +629,7 @@ nodelist {
 
         node {
                 # Hostname of the node
-                name: ehjb.rothirsch.tech
+                name: node-a
                 # Cluster membership node identifier
                 nodeid: 1
                 # Address of first link
@@ -637,7 +637,7 @@ nodelist {
         }
         node {
                 # Hostname of the node
-                name: ehjc.rothirsch.tech
+                name: node-b
                 # Cluster membership node identifier
                 nodeid: 2
                 # Address of first link
@@ -657,14 +657,14 @@ Both hosts are online. We can check this with the command `crm_mon`.
 ```output
 Cluster Summary:
   * Stack: corosync
-  * Current DC: ehjd.rothirsch.tech (version 2.0.5-ba59be7122) - partition with quorum
+  * Current DC: node-a (version 2.0.5-ba59be7122) - partition with quorum
   * Last updated: Mon Jul 25 18:13:22 2022
-  * Last change:  Mon Jul 25 18:12:59 2022 by hacluster via crmd on ehjd.rothirsch.tech
+  * Last change:  Mon Jul 25 18:12:59 2022 by hacluster via crmd on node-a
   * 2 nodes configured
   * 0 resource instances configured
 
 Node List:
-  * Online: [ ehjd.rothirsch.tech ehje.rothirsch.tech ]
+  * Online: [ node-a node-b ]
 
 Active Resources:
   * No active resources
@@ -679,12 +679,12 @@ Create a cluster configuration file
 ```conf
 
 # Define both cluster nodes
-node 1: ehjb.rothirsch.tech
-node 2: ehjc.rothirsch.tech
+node 1: node-a
+node 2: node-b
 
 # Define the SBD for STONITH
-primitive f_sbd_node_ehjb stonith:fence_sbd devices=/dev/sda plug=ehjb.rohtirsch.tech
-primitive f_sbd_node_ehjc stonith:fence_sbd devices=/dev/sda plug=ehjc.rothirsch.tech
+primitive f_sbd_node_noda-a stonith:fence_sbd devices=/dev/sda plug=node-a
+primitive f_sbd_node_noda-b stonith:fence_sbd devices=/dev/sda plug=node-b
 
 # Create a shared IP address. The active node will use it.
 primitive FOIP IPaddr \
