@@ -16,7 +16,7 @@ base_url:   de/blog/projects/sbc-cluster/sbc-cluster-drbd-pacemaker.html
 child:      none
 parent:     none
 template:   single-post.html
-state:      ready
+state:      development
 robots:     index, follow
 ---
 
