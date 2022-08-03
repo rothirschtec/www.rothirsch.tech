@@ -7,9 +7,10 @@
   padding-bottom:100px;
 }
 
-.single-post-content  {
+.single-post-content {
   width:100%!important;
 }
+
 .single-post-content blockquote,
 .single-post-content code {
   text-align:left;
@@ -29,6 +30,10 @@
   and (orientation: portrait) {
 
   .single-post-content  {
+    top:0!important;
+    height:100%!important;
+  }
+  .single-post-content #txt  {
     top:0!important;
     height:100%!important;
   }
@@ -65,7 +70,9 @@
 #blog-content .flex-container div:nth-of-type(1) {
   width: 200px; height: 200px;
   overflow: hidden; border-radius: 50%;
+  min-width:200px!important;
+
 }
-#blog-content .flex-container img {
+#blog-content .flex-container div:nth-of-type(1) img {
   width: auto; height: 100%;
 }
