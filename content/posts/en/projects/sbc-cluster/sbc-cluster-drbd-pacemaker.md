@@ -166,14 +166,14 @@ Do this for both hosts then you're prepared for the rest of the post.
 
 ## Node configuration
 
-All nodes should know each other. You could use a DNS server for that purpose, but you can harden the set up a little more by add host definitions to the `/etc/hosts` file. You also have to set your IP address.
+All nodes should know each other. You could use a DNS server for that purpose, but you can harden the set up a little more by adding host definitions to the `/etc/hosts` file.
 
 ### Node A
 
-#### node-a [vi /etc/hostenam]
+#### node-a [vi /etc/hostename]
 
 ```conf
-noda-a
+node-a
 ```
 
 #### node-a [vi /etc/hosts]
@@ -195,10 +195,10 @@ noda-a
 
 ### Node B
 
-#### node-b [vi /etc/hostenam]
+#### node-b [vi /etc/hostename]
 
 ```conf
-noda-b
+node-b
 ```
 
 #### node-b [vi /etc/hosts]
@@ -231,7 +231,7 @@ Install everything
 
 ### /etc/drbd.d/global_common.conf
 
-You can define global configuration options for your cluster here. This is interesting if you have multiple resources. For this cluster you can let everything on default.
+You can define global configuration options for your cluster here. This is interesting if you have multiple resources. For this cluster you can leave everything on default.
 
 > There is a well explained global.conf on github from DRBD's vendor company linbit: [https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example](https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example)
 
@@ -482,12 +482,19 @@ Now you can restart the service and check the iSCSI session
     iscsiadm -m session
 
 ```output
-tcp: [1] 172.30.2.20:3260,1 iqn.noda-ac.rothirsch.tech:lun-noda-ac (non-flash)
+tcp: [1] 172.30.2.20:3260,1 iqn.node-ac.rothirsch.tech:lun-node-ac (non-flash)
 ```
 
-On the iSCSI target you can check the connected devices
+Check `fdisk -l` and look if a new disk _VIRTUAL-DISK_ is present
 
-    tgtadm --mode conn --op show --tid 1
+
+```output
+Disk /dev/sda: 15 MiB, 15728640 bytes, 30720 sectors
+Disk model: VIRTUAL-DISK    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+```
 
 #### Configure SBD
 
@@ -526,75 +533,36 @@ Restart both devices and on either of the two, do following afterwards:
 
 ## Pacemaker, Corosync - Active/Passive high availability cluster
 
-Install everything
+Install and configure everything on both nodes
 
     apt update
     apt install crmsh corosync pacemaker
 
+Prevent corosync and pacemaker from autostart on reboot because you want to check everything first if STONITH kills a node.
+
+    systemctl disable corosync
+    systemctl disable pacemaker
+
 ### /etc/corosync/corosync.conf
+
 
 ```conf
 # Please read the corosync.conf.5 manual page
 totem {
         version: 2
 
-        # How long before declaring a token lost (ms)
-        token: 3000
+        # Corosync itself works without a cluster name, but DLM needs one.
+        # The cluster name is also written into the VG metadata of newly
+        # created shared LVM volume groups, if lvmlockd uses DLM locking.
+        cluster_name: debian
 
-        # How many token retransmits before forming a new configuration
-        token_retransmits_before_loss_const: 10
-
-        # How long to wait for join messages in the membership protocol (ms)
-        join: 60
-
-        # How long to wait for consensus to be achieved before starting a new round of membership configuration (ms)
-        consensus: 3600
-
-        # Turn off the virtual synchrony filter
-        vsftype: none
-
-        # Number of messages that may be sent by one processor on receipt of the token
-        max_messages: 20
-
-        # Limit generated nodeids to 31-bits (positive signed integers)
-        clear_node_high_bit: yes
-
-        # Disable encryption
-        secauth: off
-
-        # How many threads to use for encryption/decryption
-        threads: 0
-
-        # Optionally assign a fixed node id (integer)
-        # nodeid: 1234
-
-        # CLuster name, needed for GFS2 and DLM or DLM wouldn't start
-        #cluster_name: slcluster
-
-        # This specifies the mode of redundant ring, which may be none, active, or passive.
-        rrp_mode: none
-
-        interface {
-                ringnumber: 0
-                bindnetaddr: 172.30.2.0
-        }
-        transport: udpu
-}
-
-
-amf {
-        mode: disabled
-}
-
-service {
-        # Load the Pacemaker Cluster Resource Manager
-        ver:       0
-        name:      pacemaker
-}
-
-aisexec {
-        user:   root
-        group:  root
+        # crypto_cipher and crypto_hash: Used for mutual node authentication.
+        # If you choose to enable this, then do remember to create a shared
+        # secret with "corosync-keygen".
+        # enabling crypto_cipher, requires also enabling of crypto_hash.
+        # crypto works only with knet transport
+        crypto_cipher: none
+        crypto_hash: none
 }
 
 logging {
@@ -621,10 +589,10 @@ logging {
         }
 }
 
-
 quorum {
+        # Enable and configure quorum subsystem (default: off)
+        # see also corosync.conf.5 and votequorum.5
         provider: corosync_votequorum
-        two_node: 1
 }
 
 nodelist {
@@ -632,23 +600,31 @@ nodelist {
 
         node {
                 # Hostname of the node
-                name: node-a
+                name: ehjd.rothirsch.tech
                 # Cluster membership node identifier
                 nodeid: 1
                 # Address of first link
-                ring0_addr: 172.30.2.11
+                ring0_addr: 172.30.2.16
+                # When knet transport is used it's possible to define up to 8 links
+                #ring1_addr: 192.168.1.1
         }
         node {
                 # Hostname of the node
-                name: node-b
+                name: ehje.rothirsch.tech
                 # Cluster membership node identifier
                 nodeid: 2
                 # Address of first link
-                ring0_addr: 172.30.2.12
+                ring0_addr: 172.30.2.17
+                # When knet transport is used it's possible to define up to 8 links
+                #ring1_addr: 192.168.1.1
         }
         # ...
 }
 ```
+
+Create log directory if it doesn't already exits
+
+    mkdir -p /var/log/corosync
 
 Now restart corosync and start pacemaker after it
 
@@ -686,8 +662,8 @@ node 1: node-a
 node 2: node-b
 
 # Define the SBD for STONITH
-primitive f_sbd_node_noda-a stonith:fence_sbd devices=/dev/sda plug=node-a
-primitive f_sbd_node_noda-b stonith:fence_sbd devices=/dev/sda plug=node-b
+primitive f_sbd_node_node-a stonith:fence_sbd devices=/dev/sda plug=node-a
+primitive f_sbd_node_node-b stonith:fence_sbd devices=/dev/sda plug=node-b
 
 # Create a shared IP address. The active node will use it.
 primitive FOIP IPaddr \
