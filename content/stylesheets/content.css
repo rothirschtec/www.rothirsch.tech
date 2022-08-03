@@ -17,21 +17,6 @@
 }
 
 
-.wms_cnt
-{
-    position:relative;
-    overflow-x:hidden;
-    overflow-y:auto;
-    display:block!important;
-    top:0;
-    max-height:100%; width:100%;
-}
-.wms_txt
-{
-    position:relative;
-    padding-bottom:5%;
-    min-height:100%; max-width:100%;
-}
 #txt {
     position:relative;
     padding-left:1%;
@@ -97,8 +82,7 @@ and (orientation: portrait) {
 
 /****** EXIT BUTTON ******/
 
-#txt .container,
-#wms_txt .container {
+#txt .container {
     padding-top:50px;
 }
 .exit
