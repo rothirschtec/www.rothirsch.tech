@@ -177,7 +177,7 @@ Do this for both SBCs then you're prepared for the rest of the post.
 
 ## Cluster Node configuration
 
-All nodes should know each other. You could use a DNS server for that purpose, but you can harden the set up a little more by adding host definitions to the `/etc/hosts` file.
+All nodes of a cluster should know each other. You could use the protocols DNS and DHCP for that purpose, but you can harden the set up a little more by adding host definitions to the `/etc/hosts` file.
 
 ### Node A
 
@@ -231,7 +231,7 @@ node-b
 
 ### Reboot
 
-When all configuration is done, reboot both systems.
+When all configuration is done, reboot both SBCs.
 
 ## DRBD
 

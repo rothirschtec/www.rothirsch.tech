@@ -41,7 +41,7 @@ cluster-san   | 172.30.2.20
 
 ## Installiere Armbian (auf deinem PC)
 
-Alls erste konfigurierst du beide SBC. Lade die Image Datei herunter, schreib sie auf die SD-Karte und melde dich anschließend über SSH an. Du benötigst zwei Partitionen. Eine für das Betriebssystem und eine wird als _RAID1 über Ethernet_ konfiguriert.
+Als erstes konfigurierst du beide SBC. Lade die Image Datei herunter, schreib sie auf die SD-Karte und melde dich anschließend über SSH an. Du benötigst zwei Partitionen. Eine für das Betriebssystem und eine wird als _RAID1 über Ethernet_ konfiguriert.
 
 Lade die Image- und sha-Datei von [Armbian](https://www.armbian.com/bananapi-64) herunter und prüfe die Integrität:
 
@@ -174,9 +174,9 @@ Entferne die SD-Karte vom Kartenlesegerät, installiere sie in einer der Einheit
 
 Wenn du das für beide SBC gemacht hast, bist du für den weiteren Beitrag vorbereitet.
 
-## Cluser Node Konfiguration
+## Cluster Node Konfiguration
 
-All nodes should know each other. You could use a DNS server for that purpose, but you can harden the set up a little more by adding SBCs definitions to the `/etc/hosts` file.
+Alle Nodes eines Clusters sollten sich kennen. Du kannst dafür die Protokolle DNS und DHCP verwenden, aber du kannst die Konfiguration auch etwas verhärten in dem du die Nodes in die `/etc/hosts` Datei schreibst.
 
 ### Node A
 
@@ -228,9 +228,9 @@ node-b
     nmcli dev mod eth0 connection.autoconnect yes
     systemctl restart NetworkManager
 
-### Reboot
+### Neustart
 
-When all configuration is done, reboot both systems.
+Wenn die Konfigurationen abschlossen sind, starte beide SBC neu.
 
 ## DRBD
 
