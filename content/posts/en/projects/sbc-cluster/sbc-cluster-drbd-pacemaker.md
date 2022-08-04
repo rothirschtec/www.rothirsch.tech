@@ -231,22 +231,24 @@ node-b
 
 ### Reboot
 
-When all configuration is done, reboot both SBCs.
+When all configuration is done, reboot both Nodes.
 
 ## DRBD
 
-Install everything
+You can use these instructions for both Nodes until it'll tell you not to do so. Start by install the necessary dependencies
 
     apt update
     apt install drbd-utils
 
-### /etc/drbd.d/global_common.conf
+#### /etc/drbd.d/global_common.conf
 
-You can define global configuration options for your cluster here. This is interesting if you have multiple resources. For this cluster you can leave everything on default.
+You can define global configuration options for your cluster here. This guideline is meant to be as lightweight as possible, so you can leave anything on default.
 
 > There is a well explained global.conf on github from DRBD's vendor company linbit: [https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example](https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example)
 
-### /etc/drbd.d/r0.conf
+#### vi /etc/drbd.d/r0.conf
+
+What we configure is a resource that tells DRBD which disk or partition it should use for the share storage.
 
 ```conf
 resource r0 {
@@ -302,13 +304,13 @@ resource r0 {
   }
 ```
 
-### Create drbd disk
+### Create the DRBD partition
 
-Overwrite partition table
+#### Overwrite partition table
 
     dd if=/dev/zero of=/dev/mmcblk0p2 bs=1M count=128
 
-Bring the device up on both hosts
+#### Create the DRBD ressource on both nodes
 
     drbdadm create-md r0
 
@@ -326,15 +328,21 @@ Writing meta data...
 New drbd meta data block successfully created.
 ```
 
+#### Activate the resource
+
     drbdadm up r0
 
-Define one host as primary
+#### Define one host as primary
 
     drbdadm primary r0 --force
 
-You can watch what drbd does
+> ! Be ware, you only have to do this step on one node
+
+#### You can watch what DRBD does
 
     watch cat /proc/drbd
+
+> ! You can watch on both nodes
 
 ```output
 version: 8.4.11 (api:1/proto:86-101)
@@ -343,9 +351,13 @@ srcversion: 78636C7E8D25CE9BA641329
 ns:0 nr:635136 dw:9805764 dr:0 al:8 bm:0 lo:0 pe:0 ua:0 ap:0 ep:1 wo:d oos:0
 ```
 
-Create an ext4 filesystem
+#### Create a filesystem
+
+On the primary node you create an ext4 filesystem
 
     mkfs.ext4 /dev/drbd0
+
+That's it, you've successfully configured a DRBD resource
 
 ## STONITH
 

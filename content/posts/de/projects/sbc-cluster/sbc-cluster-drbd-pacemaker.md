@@ -230,22 +230,24 @@ node-b
 
 ### Neustart
 
-Wenn die Konfigurationen abschlossen sind, starte beide SBC neu.
+Wenn die Konfigurationen abschlossen sind, starte beide Nodes neu.
 
 ## DRBD
 
-Install everything
+Du kannst diese Anleitung für beide Nodes verwenden außer dir wird etwas gegenteiliges beschrieben. Starte mit der Installation der notwendigen Abhängigkeiten
 
     apt update
     apt install drbd-utils
 
-### /etc/drbd.d/global_common.conf
+#### /etc/drbd.d/global_common.conf
 
-You can define global configuration options for your cluster here. This is interesting if you have multiple resources. For this cluster you can leave everything on default.
+Hier kannst du globale Konfigurtionen für deinen Cluster definieren. Der Leitfaden ist darauf ausgelegt alles so simple wie möglich zu halten, daher kannst du dich hier auf die Standardeinstellungen verlassen.
 
-> There is a well explained global.conf on github from DRBD's vendor company linbit: [https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example](https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example)
+> Es gibt eine sehr gut beschriebene global.conf auf github von der Hersteller Firma von DRBD, linbit: [https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example](https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example)
 
-### /etc/drbd.d/r0.conf
+#### vi /etc/drbd.d/r0.conf
+
+Was wir aber konfigurieren ist eine Ressource die DRBD zeigt welche Fesplatte oder Parition es für den geteilten Speicher verwenden soll.
 
 ```conf
 resource r0 {
@@ -301,13 +303,13 @@ resource r0 {
   }
 ```
 
-### Create drbd disk
+### Erzeuge die DRBD partition
 
-Overwrite partition table
+#### Überschreibe die Paritionstabelle
 
     dd if=/dev/zero of=/dev/mmcblk0p2 bs=1M count=128
 
-Bring the device up on both hosts
+#### Erstelle die DRBD Ressource auf beiden Nodes
 
     drbdadm create-md r0
 
@@ -325,15 +327,21 @@ Writing meta data...
 New drbd meta data block successfully created.
 ```
 
+#### Aktiviere die Ressource
+
     drbdadm up r0
 
-Define one host as primary
+#### Definiere eine primäre Node
 
     drbdadm primary r0 --force
 
-You can watch what drbd does
+> ! Aufpassen, dieser Schritt soll nur auf einer Node durchgeführt werden
+
+#### Du kannst verfolgen was DRBD macht
 
     watch cat /proc/drbd
+
+> ! Du kannst das auf beiden Nodes verfolgen.
 
 ```output
 version: 8.4.11 (api:1/proto:86-101)
@@ -342,9 +350,13 @@ srcversion: 78636C7E8D25CE9BA641329
 ns:0 nr:635136 dw:9805764 dr:0 al:8 bm:0 lo:0 pe:0 ua:0 ap:0 ep:1 wo:d oos:0
 ```
 
-Create an ext4 filesystem
+#### Erstelle ein Dateisystem
+
+Auf der primären Node erstellst du ein ext4 Dateisystem
 
     mkfs.ext4 /dev/drbd0
+
+Das wars, du hast erfolgreich eine DRBD Ressource konfiguriert.
 
 ## STONITH
 
