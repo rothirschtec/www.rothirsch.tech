@@ -10,6 +10,9 @@
 .single-post-content {
   width:100%!important;
 }
+.single-post-content #txt {
+  left: -12px;
+}
 
 .single-post-content blockquote,
 .single-post-content code {

@@ -8,7 +8,7 @@ Authors:    René Zingerle, SSCP
 TwitterA:   r9_rtec
 Timestamp:  2022-07-23_14:12:28
 Image:      content/images/posts/projects/sbc-cluster/Two-Clearfog-Pro-and-two-bpi-m64.jpg
-Alt:        For illustration, this image shows two bpi-m64 positioned parallel to each other.
+Alt:        For illustration, this image shows two bpi-m64 positioned parallel to each  other inside an 1U case.
 Index:      0
 ChangeFreq: monthly
 Priority:   0.8
@@ -22,27 +22,25 @@ robots:     index, follow
 
 # SBC cluster: DRBD, Pacemaker and corosync (Banana Pi m64)
 
-The goal of this post is to show you how to set up a high available cluster, configured with two single board computer. The cluster will use DRBD to replicate a storage system over the network. Both hosts will be connected through a switch. So all incoming and outgoing connections and the storage replication will use the same subnet. Two other parts of the cluster are:
+The goal of this post is to show you how to set up a high available cluster, configured with two single board computer. The cluster will use DRBD to replicate a storage system over the network. Both single board computer SBCs will be connected through a switch. So all incoming and outgoing connections and the storage replication will use the same subnet. Two other tools for the cluster are:
 
 - Pacemaker for resource management
 - Corosync to provide good synchronicity
 
-![For illustration, this image shows two bpi-m64 positioned parallel to each other, connected to the network and the power plug](content/images/posts/projects/sbc-cluster/bpi-m64_cluster_of_two_plugged_in_to_network_and_power.jpg "bpi-m64 cluster of two")
+![For illustration, this image shows two bpi-m64 positioned parallel to each other inside an 1U case, connected to the network and the power plug](content/images/posts/projects/sbc-cluster/bpi-m64_cluster_of_two_plugged_in_to_network_and_power.jpg "bpi-m64 cluster of two")
 
 ## Parameters used for this guideline
 
-hosts         | IP addresses
+SBCs          | IP addresses
 ------------- | -------------
 cluster-ab    | 172.30.2.15
 node-a        | 172.30.2.16
 node-b        | 172.30.2.17
 cluster-san   | 172.30.2.20
-san-a         | 172.30.2.21
-san-b         | 172.30.2.22
 
 ## Install Armbian (on your PC)
 
-First of all you need to configure both hosts. Download an image, install it and login via SSH. You need two partitions. One for the operating system and one that will be configured as _RAID1 over ethernet_.
+First of all you configure both SBCs. Download an image, flash it to a sd card and login via SSH afterwards. You need two partitions. One for the operating system and one that will be configured as _RAID1 over ethernet_.
 
 Download the image and sha file from [Armbian](https://www.armbian.com/bananapi-64) and check its integrity:
 
@@ -65,17 +63,31 @@ sudo dd if=Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img of=/dev/<you
 
 ## Preparing partitions (on your PC)
 
-For the cluster a 64GB - Class 10 sd card is used, so after flashing the image onto it you can create a second partition by decreasing the size of the first one. So after you have configured your device, you can use `fdisk` to resize your main partition and create the second one you'll use for _DRBD_.
+For this cluster a 64GB - Class 10 sd card is used. So after flashing the image onto it you can create a second partition by decreasing the size of the first one. For this you can use `fdisk`.
 
 ![Do visualize this you can see an image the shows a bar with 25% width section referencing to a partition for the system and 75% section that represents the share storage](content/images/posts/projects/sbc-cluster/Partitioning.svg "bpi-m64 cluster of two")
 
-Prepare partitions by start using fdisk
+### Change partitions with the tool fdisk
+
+Find your sd cards name
+
+    fdisk -l
+
+```output
+Disk /dev/<your-sdcard>: 59,48 GiB, 63864569856 bytes, 124735488 sectors
+Disk model: 1081 SD         
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0xe7f1ae5c
+```
+
+And start fdisk
 
     fdisk /dev/<your-sdcard>
 
-> Find your disks name before with `fdisk -l`
-
-### Show current partitions
+#### Show current partitions
 
     Command (m for help): p
 
@@ -86,21 +98,20 @@ Prepare partitions by start using fdisk
     Disklabel type: dos
     Disk identifier: 0xe7f1ae5c
 
-    Device         Boot Start       End   Sectors  Size Id Type
-    /dev/<your-sdcard>p1       8192 123469823 123461632 58.9G 83 Linux
+    Device                Boot Start       End   Sectors  Size Id Type
+    /dev/<your-sdcard>p1         8192 123469823 123461632 58.9G 83 Linux
 
-> Be aware of the starting position of the partition. It shows you 8192 so you have to use this on resizing the partition
+> Be aware of the starting position of the partition. It shows you 8192 so you have to use this on resizing the partition.
 
+#### Delete partition
 
-### Delete partition
-
-Yes you have to delete the partition first. But `fdisk` doesn't really delete the partition at this point. You have to confirm this later on.
+Yes, you have to delete the system partition first. But `fdisk` doesn't really delete the partition at this point. You have start the writing process later on.
 
     Command (m for help): d
     Selected partition 1
     Partition 1 has been deleted.
 
-### Create the first partition with a size of 16 Gigabyte
+#### Create the system partition with 16 Gigabyte
 
     Command (m for help): n
     Partition type
@@ -116,9 +127,9 @@ Yes you have to delete the partition first. But `fdisk` doesn't really delete th
 
     Do you want to remove the signature? [Y]es/[N]o: N
 
-> Don't forget to use the right starting point for  the first sector
+> Don't forget to set the right starting point for the first sector.
 
-### Create the second partition with the rest size
+#### Create the second partition
 
 Print the latest configuration to find the end position of the first partition.
 
@@ -132,10 +143,10 @@ Print the latest configuration to find the end position of the first partition.
     Disklabel type: dos
     Disk identifier: 0xe7f1ae5c
 
-    Device     Boot Start      End  Sectors Size Id Type
-    /dev/<your-sdcard>p1       8192 33562623 33554432  16G 83 Linux
+    Device                Boot Start End      Sectors   Size Id Type
+    /dev/<your-sdcard>p1         8192  33562623 33554432  16G  83 Linux
 
-The end column shows you a value of 33562623 so increment it by one and create the next partition with it:
+The "end" column shows you a value of 33562623 so increment it by one and create the next partition with it:
 
     Command (m for help): n
     Partition type
@@ -148,23 +159,23 @@ The end column shows you a value of 33562623 so increment it by one and create t
 
     Created a new partition 2 of type 'Linux' and of size 43,5 GiB.
 
-### Write anything to it
+#### Write anything to the sd card
 
-Most important, you have to write anything to the disk. Use __w__ to do that.
+Most important, you have to write anything to the sd card. Use __w__ to do that.
 
     Command (m for help): w
     The partition table has been altered.
     Syncing disks
 
-### Boot the device
+#### Boot the device
 
-Unplug the sd card, insert it into the device and start up:
+Unplug the sd card from the card reader, insert it into either of the devices and start up:
 
-> Use this link for further information about _first startup_ configuration _options_:  [https://docs.armbian.com/User-Guide_Getting-Started/#how-to-login](https://docs.armbian.com/User-Guide_Getting-Started/#how-to-login)
+> Use this link for further information about possible options for _first startup_ of an Armbian device:  [https://docs.armbian.com/User-Guide_Getting-Started/#how-to-login](https://docs.armbian.com/User-Guide_Getting-Started/#how-to-login)
 
-Do this for both hosts then you're prepared for the rest of the post.
+Do this for both SBCs then you're prepared for the rest of the post.
 
-## Node configuration
+## Cluster Node configuration
 
 All nodes should know each other. You could use a DNS server for that purpose, but you can harden the set up a little more by adding host definitions to the `/etc/hosts` file.
 
@@ -354,16 +365,18 @@ _Shoot the other node in the head [STONITH]_ is a technique that tries to preven
 
 You can set up another high available node that'll provide you with LUN information via the iSCSI protocol. For this post two bpi-m2+ are used to share the LUN. You can use the explanation above and use the eMMC storage to create a DRBD storage device. There is a post in development which will show the configuration of the bpi-m2+ as iSCSI-SAN later on. In the meantime the installation of the iSCSI-SAN will be explained here in short.
 
-Install tgt
+#### Install tgt
 
     apt update
     apt install tgt
 
-Create an image file on the shared storage
+#### Create an image file on the shared storage
 
     mkdir -p /media/stonith_luns
     mount /dev/drbd0 /media/stonith_luns
     dd if=/dev/zero of=/media/stonith_luns/cluster-ab.img count=0 bs=1 seek=15M
+
+#### Configure tgt
 
 Now you can tell tgt to use this image file
 
@@ -509,7 +522,7 @@ You have to change a few lines inside `/etc/default/sbd` from default to this:
     SBD_WATCHDOG_DEV=/dev/watchdog
 
 
-Restart both devices and on either of the two, do following afterwards:
+__! Restart__ both devices and on either of the two, do following afterwards:
 
     # Create the SBD device with timeouts for watchdog and sbd
     sbd -d /dev/sda -4 20 -1 10 create
@@ -517,16 +530,9 @@ Restart both devices and on either of the two, do following afterwards:
     # Check what was written
     sbd -d /dev/sda dump
 
-    # Check if both nodes are listed
-    sbd -d /dev/sda list
-
-```output
-0 node-a clear
-1 node-b clear
-```
-
-> Thanks to:  
+> FYI `sbd` is not a service, so you don't have to start it. This will be done by pacemaker later on
 <br>
+Thanks to:  
 [https://kb.linbit.com/stonith-using-sbd-storage-based-death](https://kb.linbit.com/stonith-using-sbd-storage-based-death)
 <br>
 
@@ -622,14 +628,19 @@ nodelist {
 }
 ```
 
-Create log directory if it doesn't already exits
-
-    mkdir -p /var/log/corosync
-
 Now restart corosync and start pacemaker after it
 
     service corosync restart
     service pacemaker start
+
+You can now check if sbd recognizes both nodes
+
+    sbd -d /dev/sda list
+
+```output
+0 node-a clear
+1 node-b clear
+```
 
 Both hosts are online. We can check this with the command `crm_mon`.
 
@@ -651,7 +662,7 @@ Active Resources:
 
 ### Resource configuration
 
-Create a cluster configuration file
+#### Create a cluster configuration file
 
     vim cib.txt
 
@@ -688,26 +699,34 @@ colocation co_FOIP_DRBD inf: c_FOIP drbd_fs-r0 drbd_ms-r0:Master
 order fs_after_drbd Mandatory: drbd_ms-r0:promote drbd_fs-r0:start
 ```
 
+#### Create directory for r0 on both nodes
+
+    mkdir -p /media/r0
+
+#### Create directory for r0 on one node only
+
     # Stop all active resources
     crm configure property stop-all-resources=true
 
     # Replace all resources with the ones inside the cib.txt
     crm configure load replace cib.txt
 
+> You do these steps only on either of the two nodes but you can watch what happens with `crm_mon` on the other node
 
 
 #### Helpful commands
 
     # export
     crm configure show > cib.txt
+
     # update
     crm configure load update cib.txt
 
     # stop service
-    crm resource stop fetchmail
+    crm resource stop <service>
 
     # Clean up
-    crm resource cleanup dockerd
+    crm resource cleanup
 
     # Move
-    crm resource move dockerd <other-node>
+    crm resource move <service> <other-node>
