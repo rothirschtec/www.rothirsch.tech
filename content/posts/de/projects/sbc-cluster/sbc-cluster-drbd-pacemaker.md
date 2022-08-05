@@ -16,7 +16,7 @@ base_url:   de/blog/projects/sbc-cluster/sbc-cluster-drbd-pacemaker.html
 child:      none
 parent:     none
 template:   single-post.html
-state:      ready
+state:      development
 robots:     index, follow
 ---
 
@@ -104,7 +104,7 @@ und starte fdisk
 
 #### Löschen der Partition
 
-Ja, du musst die System Parition zuerst löschen. `fdisk` löscht die Partition aber zu diesem Zeitpunkt nicht. Du musst den Schreibvorgang später erst starten.
+Ja, du musst die System Partition zuerst löschen. `fdisk` löscht die Partition aber zu diesem Zeitpunkt nicht. Du musst den Schreibvorgang später erst starten.
 
     Command (m for help): d
     Selected partition 1
@@ -145,7 +145,7 @@ Gib die letzte Konfiguration aus um die Endposition der ersten Partition zu find
     Device                Boot Start End      Sectors   Size Id Type
     /dev/<your-sdcard>p1         8192  33562623 33554432  16G  83 Linux
 
-Die Spalte "End" zeigt einen Wert von 33562623 den wir um 1 erhöhen um damit die nächste Parition zu erstellen
+Die Spalte "End" zeigt einen Wert von 33562623 den wir um 1 erhöhen um damit die nächste Partition zu erstellen
 
     Command (m for help): n
     Partition type
@@ -247,7 +247,7 @@ Hier kannst du globale Konfigurtionen für deinen Cluster definieren. Der Leitfa
 
 #### vi /etc/drbd.d/r0.conf
 
-Was wir aber konfigurieren ist eine Ressource die DRBD zeigt welche Fesplatte oder Parition es für den geteilten Speicher verwenden soll.
+Was wir aber konfigurieren ist eine Ressource die DRBD zeigt welche Festplatte oder Partition es für den geteilten Speicher verwenden soll.
 
 ```conf
 resource r0 {
@@ -305,7 +305,7 @@ resource r0 {
 
 ### Erzeuge die DRBD partition
 
-#### Überschreibe die Paritionstabelle
+#### Überschreibe die Partitionstabelle
 
     dd if=/dev/zero of=/dev/mmcblk0p2 bs=1M count=128
 
@@ -360,9 +360,7 @@ Das wars, du hast erfolgreich eine DRBD Ressource konfiguriert.
 
 ## STONITH
 
-_Now it'll get really awesome._
-
-_Shoot the other node in the head [STONITH]_ is a technique that tries to prevent something called _split brain_. This is a problem which occurs if both nodes in the cluster think, that they are the new main node. This happens when they can't see each other on the network via corosync. By using shared storage this will shred your data immediately. So each node which thinks it has to be the main node will first shoot the other node in the head, before it'll become the main node. There are multiple STONITH fencing devices. Some will sit directly inside your mainboard which you can execute over a separate ethernet connection like IPMI or you could power off the device by controlling your UPS. The bpi-m64 doesn't have such features but it provides watchdog. With it you can use a third-party node that'll serve as a iSCSI-SAN to provide node information inside a [LUN](https://www.minitool.com/lib/logical-unit-number.html).  If something went wrong one node will write the other node that it should commit suicide. If a node loses the connection to the iSCSI-target it will also swallow the poison pill, means it will to a hard reset.
+_Shoot the other node in the head [STONITH]_, also schieß der anderen Node in den Kopft, ist eine Technik die einen Zustand names _split brain_ verhindern soll. Es handelt sich hierbei um ein Problem das auftritt wenn beide Nodes glauben, dass sie der Hauptnode sind. Das passiert wenn sich beide Node nicht mehr über das Netzwerk via corosync sehen können. Unter Verwendung von geteilten Datenspeichern würde das deine Daten sofort zerstören. Wenn also eine Node zur Hauptnode wird, schießt sie im ersten Schritt der anderen Node in den Kopf. Vielleicht denkst du jetzt, was ist wenn sich beide Nodes zur gleichen zeit eleminieren? Das kann tatsächlich passieren. Aber in den meisten Fällen ist eine Node schneller und ein Neustart beider Nodes ist immer besser als eine _split brain_ Situation auszulösen. Es gibt verschieden "STONITH fencing" Einheiten. Manche können in direkt in deinem Mainboard sitzen und über eine separate Netzwerkverbindung ausgeführt werden (IPMI) oder du kannst direkt die Stromversorgung über deine USV kappen. Bei dem SBC Cluster gibt es diese Einheiten aber nicht bzw. machen sie nicht wirklich Sinn. Das bpi-m64 hat auch keine STONITH Einheit aber es hat einen Hardware Watchdog installiert. Damit können wir ein drittes SBC verwenden das als ein iSCSI-SAN agiert und Node Informationen über ein [LUN](https://www.minitool.com/lib/logical-unit-number.html) bereitstellt. Eine Node kann über dieses Geräte der anderen Node schreiben, dass sie sich selbst neustarten soll. Wenn eine Node die Verbindung zu dem iSCSI-Target verliert schluckt sie selbt sie giftige Pille und startet sich neu.
 
 > These articles provide well explained inforation about fencing, STONITH, SBD [Stonith Block Device] and timeouts:
 <br>
