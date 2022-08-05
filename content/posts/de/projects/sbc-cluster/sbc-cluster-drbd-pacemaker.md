@@ -241,7 +241,7 @@ Du kannst diese Anleitung für beide Nodes verwenden außer dir wird etwas gegen
 
 #### /etc/drbd.d/global_common.conf
 
-Hier kannst du globale Konfigurtionen für deinen Cluster definieren. Der Leitfaden ist darauf ausgelegt alles so simple wie möglich zu halten, daher kannst du dich hier auf die Standardeinstellungen verlassen.
+Hier kannst du globale Konfigurationen für deinen Cluster definieren. Der Leitfaden ist darauf ausgelegt alles so simple wie möglich zu halten, daher kannst du dich hier auf die Standardeinstellungen verlassen.
 
 > Es gibt eine sehr gut beschriebene global.conf auf github von der Hersteller Firma von DRBD, linbit: [https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example](https://github.com/LINBIT/drbd-8.3/blob/master/scripts/drbd.conf.example)
 
@@ -370,7 +370,7 @@ _Shoot the other node in the head [STONITH]_, also schieß der anderen Node in d
 <br>
 - [https://clusterlabs.org/pacemaker/doc/crm_fencing.html](https://clusterlabs.org/pacemaker/doc/crm_fencing.html)
 
-### The third-party node
+### Die dritte Node
 
 Du kannst einen weitern hochverfügbaren Cluster aufsetzen der LUN Informationen über das iSCSI Protokoll bereitstellt. Für diesen Beitrag werden dafür 2 bpi-m2+ verwendet um das LUN zu teilen. Du kannst die bisherige Anleituung dafür verwenden den Cluster aufzusetzen und den eMMC Speicher verwenden um den DRBD Datenspeicher zu installieren. Es wird gerade an einem Beitrag gearbeitet, der diese Installation beschreibt. Daher wird hier nur die iSCSI-Target installation beschrieben.
 
@@ -552,12 +552,12 @@ Weiter Informationen:
 
 ## Pacemaker, Corosync - Aktiv/Passiv hochverfügbarer Cluster
 
-Install and configure everything on both nodes
+Installiere und konfiguriere hier alles auf beiden Nodes außer die Anleitung sagt etwas anderes.
 
     apt update
     apt install crmsh corosync pacemaker
 
-Prevent corosync and pacemaker from autostart on reboot because you want to check everything first if STONITH kills a node.
+Deaktiviere Corosync und Pacemaker beim Autostart nach einem Neustart, da du nach einem Neustart immer erst prüfen willst ob alles in Ordnung ist.
 
     systemctl disable corosync
     systemctl disable pacemaker
@@ -641,12 +641,12 @@ nodelist {
 }
 ```
 
-Now restart corosync and start pacemaker after it
+Nach der Konfiguration startest du Corosync und Pacemaker
 
     service corosync restart
     service pacemaker start
 
-You can now check if sbd recognizes both nodes
+Zurück zur SBD Einheit, du kanst jetzt prüfen ob beide Nodes im LUN gelistet sind.
 
     sbd -d /dev/sda list
 
@@ -655,7 +655,9 @@ You can now check if sbd recognizes both nodes
 1 node-b clear
 ```
 
-Both hosts are online. We can check this with the command `crm_mon`.
+`crm_mon` ist das Werkzeug mit dem du die Gesundheit deines Clusters prüfen kannst.
+
+    crm_mon
 
 ```output
 Cluster Summary:
@@ -673,30 +675,32 @@ Active Resources:
   * No active resources
 ```
 
-### Resource configuration
+### Ressourcen Konfiguration
 
-#### Create a cluster configuration file
+#### Cluster-Konfigurationsdatei
+
+Erstelle eine Cluster-Konfigurationsdatei über die du deinen Cluster deklarierst.
 
     vim cib.txt
 
 ```conf
 
-# Define both cluster nodes
+# Definiere beide Cluster Nodes
 node 1: node-a
 node 2: node-b
 
-# Define the SBD for STONITH
+# Define SBD
 primitive f_sbd_node_node-a stonith:fence_sbd devices=/dev/sda plug=node-a
 primitive f_sbd_node_node-b stonith:fence_sbd devices=/dev/sda plug=node-b
 
-# Create a shared IP address. The active node will use it.
+# Erstelle eine geteilte IP Adresse die die aktive Node verwendet.
 primitive FOIP IPaddr \
         params ip=172.30.2.10 \
         meta target-role=Started
 clone c_FOIP FOIP \
         params master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
 
-# Tell corosync how to mount your DRBD shared storage on the active node
+# Zeige Corosync wie es deine geteilten DRBD Datenspeicher mounten soll.
 primitive drbd0 ocf:linbit:drbd \
         params drbd_resource=r0 \
         op start interval=0 timeout=240 \
@@ -706,40 +710,45 @@ primitive drbd_fs-r0 Filesystem \
 ms drbd_ms-r0 drbd0 \
         meta master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
 
-
+# Verbinde Ressourcen miteinander. Wenn die IP Adresse auf einer Node aktiv ist, soll dort auch der geteilte Datenspeicher  aktiviert werden.
 colocation co_FOIP_DRBD inf: c_FOIP drbd_fs-r0 drbd_ms-r0:Master
 
+# Startverhalten der Ressource anordnen. In diesem Fall wird erst geprüft der ob die DRBD Ressource als primär am aktiven Node eingestellt ist bevor das Dateisystem gemounted wird.
 order fs_after_drbd Mandatory: drbd_ms-r0:promote drbd_fs-r0:start
 ```
 
-#### Create directory for r0 on both nodes
+#### DRBD Ordner
+
+Erstelle einen Ordner für deine DRBD Ressource (r0)
 
     mkdir -p /media/r0
 
-#### Create directory for r0 on one node only
+#### Konfiguriere deinen Cluster
 
-    # Stop all active resources
+Du kannst nun deine Cluster Definition verwenden um die Ressourcen in deinem Cluster zu aktivieren.
+
+    # Stoppe zur Sicherheit alle aktiven Ressourcen
     crm configure property stop-all-resources=true
 
-    # Replace all resources with the ones inside the cib.txt
+    # Überschreibe die bestehende Konfiguration
     crm configure load replace cib.txt
 
-> You do these steps only on either of the two nodes but you can watch what happens with `crm_mon` on the other node
+> Du führst diese Schritte immer nur auf einer Node aus, aber du kannst die zweite Node verwenden um den Status des Clusters mittel `crm_mon` zu beobachten.
 
 
-#### Helpful commands
+#### Hilfreiche Kommandos
 
-    # export
+    # Exportiere Cluster Definition
     crm configure show > cib.txt
 
-    # update
+    # Aktualisiere Cluster Konfiguration
     crm configure load update cib.txt
 
-    # stop service
+    # Stoppe einen Service
     crm resource stop <service>
 
-    # Clean up
+    # Räum den Cluster auf. Wenn einmal gar nichts mehr zu funktionieren scheint
     crm resource cleanup
 
-    # Move
+    # Verschiebe einen Service auf die andere Node
     crm resource move <service> <other-node>

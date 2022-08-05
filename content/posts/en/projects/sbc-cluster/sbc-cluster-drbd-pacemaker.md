@@ -553,12 +553,12 @@ More information:
 
 ## Pacemaker, Corosync - Active/Passive high availability cluster
 
-Install and configure everything on both nodes
+Install and configure everything on both nodes unless the guideline tells you otherwise.
 
     apt update
     apt install crmsh corosync pacemaker
 
-Prevent corosync and pacemaker from autostart on reboot because you want to check everything first if STONITH kills a node.
+Disable corosync and pacemaker from autostart on reboot because you want to check everything first on any reboot.
 
     systemctl disable corosync
     systemctl disable pacemaker
@@ -647,7 +647,7 @@ Now restart corosync and start pacemaker after it
     service corosync restart
     service pacemaker start
 
-You can now check if sbd recognizes both nodes
+Back to the SBD device, you're now able to list both nodes inside the LUN
 
     sbd -d /dev/sda list
 
@@ -656,7 +656,7 @@ You can now check if sbd recognizes both nodes
 1 node-b clear
 ```
 
-Both hosts are online. We can check this with the command `crm_mon`.
+`crm_mon` ist the tool you can use to check the health of your cluster.
 
 ```output
 Cluster Summary:
@@ -676,7 +676,9 @@ Active Resources:
 
 ### Resource configuration
 
-#### Create a cluster configuration file
+#### Cluster configuration file
+
+Create a cluster configuration file in which you will define your cluster.
 
     vim cib.txt
 
@@ -686,7 +688,7 @@ Active Resources:
 node 1: node-a
 node 2: node-b
 
-# Define the SBD for STONITH
+# Definde SBD
 primitive f_sbd_node_node-a stonith:fence_sbd devices=/dev/sda plug=node-a
 primitive f_sbd_node_node-b stonith:fence_sbd devices=/dev/sda plug=node-b
 
@@ -707,22 +709,27 @@ primitive drbd_fs-r0 Filesystem \
 ms drbd_ms-r0 drbd0 \
         meta master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
 
-
+# Connect resource to each other. If the IP is activated on a node so will the shared storage.
 colocation co_FOIP_DRBD inf: c_FOIP drbd_fs-r0 drbd_ms-r0:Master
 
+# Order the start behaviour of ressources. In this case it will first be checked if the DRBD resource ist configured as primary on the active node before it mounts the filesystem
 order fs_after_drbd Mandatory: drbd_ms-r0:promote drbd_fs-r0:start
 ```
 
-#### Create directory for r0 on both nodes
+#### DRBD directory
+
+Create a directory for your DRBD resource (r0)
 
     mkdir -p /media/r0
 
-#### Create directory for r0 on one node only
+#### Configure your cluster
 
-    # Stop all active resources
+You can now use your cluster definition to create the resources on your cluster.
+
+    # To be more secure, stop all active resources first
     crm configure property stop-all-resources=true
 
-    # Replace all resources with the ones inside the cib.txt
+    # Overwrite the existing configuration
     crm configure load replace cib.txt
 
 > You do these steps only on either of the two nodes but you can watch what happens with `crm_mon` on the other node
@@ -730,17 +737,17 @@ order fs_after_drbd Mandatory: drbd_ms-r0:promote drbd_fs-r0:start
 
 #### Helpful commands
 
-    # export
+    # Export cluster definition
     crm configure show > cib.txt
 
-    # update
+    # Update cluster configuration
     crm configure load update cib.txt
 
-    # stop service
+    # Stop a service
     crm resource stop <service>
 
-    # Clean up
+    # Clean up. If it seems that nothing doesn't work anymore
     crm resource cleanup
 
-    # Move
+    # Move a service to the other node
     crm resource move <service> <other-node>
