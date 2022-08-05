@@ -16,7 +16,7 @@ base_url:   de/blog/projects/sbc-cluster/sbc-cluster-drbd-pacemaker.html
 child:      none
 parent:     none
 template:   single-post.html
-state:      development
+state:      ready
 robots:     index, follow
 ---
 
@@ -360,9 +360,9 @@ Das wars, du hast erfolgreich eine DRBD Ressource konfiguriert.
 
 ## STONITH
 
-_Shoot the other node in the head [STONITH]_, also schieß der anderen Node in den Kopft, ist eine Technik die einen Zustand names _split brain_ verhindern soll. Es handelt sich hierbei um ein Problem das auftritt wenn beide Nodes glauben, dass sie der Hauptnode sind. Das passiert wenn sich beide Node nicht mehr über das Netzwerk via corosync sehen können. Unter Verwendung von geteilten Datenspeichern würde das deine Daten sofort zerstören. Wenn also eine Node zur Hauptnode wird, schießt sie im ersten Schritt der anderen Node in den Kopf. Vielleicht denkst du jetzt, was ist wenn sich beide Nodes zur gleichen zeit eleminieren? Das kann tatsächlich passieren. Aber in den meisten Fällen ist eine Node schneller und ein Neustart beider Nodes ist immer besser als eine _split brain_ Situation auszulösen. Es gibt verschieden "STONITH fencing" Einheiten. Manche können in direkt in deinem Mainboard sitzen und über eine separate Netzwerkverbindung ausgeführt werden (IPMI) oder du kannst direkt die Stromversorgung über deine USV kappen. Bei dem SBC Cluster gibt es diese Einheiten aber nicht bzw. machen sie nicht wirklich Sinn. Das bpi-m64 hat auch keine STONITH Einheit aber es hat einen Hardware Watchdog installiert. Damit können wir ein drittes SBC verwenden das als ein iSCSI-SAN agiert und Node Informationen über ein [LUN](https://www.minitool.com/lib/logical-unit-number.html) bereitstellt. Eine Node kann über dieses Geräte der anderen Node schreiben, dass sie sich selbst neustarten soll. Wenn eine Node die Verbindung zu dem iSCSI-Target verliert schluckt sie selbt sie giftige Pille und startet sich neu.
+_Shoot the other node in the head [STONITH]_, also schieß der anderen Node in den Kopft, ist eine Technik die einen Zustand names _split brain_ verhindern soll. Es handelt sich hierbei um ein Problem das auftritt wenn beide Nodes glauben, dass sie der Hauptnode sind. Das passiert wenn sich beide Nodes nicht mehr über das Netzwerk via corosync sehen können. Unter Verwendung von geteilten Datenspeichern würde das deine Daten sofort zerstören. Wenn also eine Node zur Hauptnode wird, schießt sie im ersten Schritt der anderen Node in den Kopf. Vielleicht denkst du jetzt, was ist wenn sich beide Nodes zur gleichen Zeit eleminieren? Das kann tatsächlich passieren. Aber in den meisten Fällen ist eine Node schneller und ein Neustart beider Nodes ist immer besser als eine _split brain_ Situation auszulösen. Es gibt verschiedene "STONITH fencing" Einheiten. Manche können direkt in deinem Mainboard sitzen und über eine separate Netzwerkverbindung ausgeführt werden (IPMI) oder du kannst direkt die Stromversorgung über deine USV kappen. Bei dem SBC Cluster gibt es diese Einheiten aber nicht bzw. machen sie nicht wirklich Sinn. Das bpi-m64 hat auch keine STONITH Einheit aber es hat einen Hardware Watchdog installiert. Damit können wir ein drittes SBC verwenden das als ein iSCSI-SAN agiert und Node-Informationen über ein [LUN](https://www.minitool.com/lib/logical-unit-number.html) bereitstellt. Eine Node kann über dieses Geräte der anderen Node schreiben, dass sie sich selbst neustarten soll. Wenn eine Node die Verbindung zu dem iSCSI-Target verliert schluckt sie selbt sie giftige Pille und startet sich neu.
 
-> These articles provide well explained inforation about fencing, STONITH, SBD [Stonith Block Device] and timeouts:
+> Diese Artikel beinhalten gut erklärte Informationen über fencing, STONITH, SBD [Stonith Block Device] und Timeouts:
 <br>
 - [https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/](https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/)
 <br>
@@ -372,22 +372,24 @@ _Shoot the other node in the head [STONITH]_, also schieß der anderen Node in d
 
 ### The third-party node
 
-You can set up another high available node that'll provide you with LUN information via the iSCSI protocol. For this post two bpi-m2+ are used to share the LUN. You can use the explanation above and use the eMMC storage to create a DRBD storage device. There is a post in development which will show the configuration of the bpi-m2+ as iSCSI-SAN later on. In the meantime the installation of the iSCSI-SAN will be explained here in short.
+Du kannst einen weitern hochverfügbaren Cluster aufsetzen der LUN Informationen über das iSCSI Protokoll bereitstellt. Für diesen Beitrag werden dafür 2 bpi-m2+ verwendet um das LUN zu teilen. Du kannst die bisherige Anleituung dafür verwenden den Cluster aufzusetzen und den eMMC Speicher verwenden um den DRBD Datenspeicher zu installieren. Es wird gerade an einem Beitrag gearbeitet, der diese Installation beschreibt. Daher wird hier nur die iSCSI-Target installation beschrieben.
 
-#### Install tgt
+#### Installiere tgt
 
     apt update
     apt install tgt
 
-#### Create an image file on the shared storage
+#### Erstelle eine Image-Datei auf dem geteilten Datenspeichern
+
+Das LUN benötigt nur eine Größe von 15 MB.
 
     mkdir -p /media/stonith_luns
     mount /dev/drbd0 /media/stonith_luns
     dd if=/dev/zero of=/media/stonith_luns/cluster-ab.img count=0 bs=1 seek=15M
 
-#### Configure tgt
+#### Konfiguriere tgt
 
-Now you can tell tgt to use this image file
+Hier kannst du tgt zeigen wo es die Image-Datei finden und die Konfiguration absichern.
 
     vi /etc/tgt/conf.d/cluster-ab_iscsi.conf
 
@@ -405,7 +407,7 @@ Now you can tell tgt to use this image file
 </target>
 ```
 
-Restart the service and check if your configuration is present
+Neustarte den Service und prüfe ob deine Konfiguration registriert wurde.
 
     systemctl restart tgt
     tgtadm --mode target --op show
@@ -461,16 +463,16 @@ Target 1: iqn.cluster-ab:lun-ab
 
 ```
 
-> Thanks to:
+> Weitere Informationen:
   <br>
   [https://www.tecmint.com/setup-iscsi-target-and-initiator-on-debian-9/](https://www.tecmint.com/setup-iscsi-target-and-initiator-on-debian-9/)
   <br>
   [https://www.server-world.info/en/note?os=Debian_10&p=iscsi&f=2](https://www.server-world.info/en/note?os=Debian_10&p=iscsi&f=2)
 
 
-### The HA cluster
+### Der hochverfügbare Cluster
 
-Back on the high available cluster you'll connect to the iSCSI-Target first and configure the _STONITH Block Device_ next. Install `open-iscsi` and connect to the iSCSI target:
+Zurück am hochverfügbaren Cluster verbindest du dich zuerst mit dem iSCSI-Target und konfigurierst die _STONITH Block Device_ im nächsten Schritt. Installiere dafür `open-iscsi` und verbinde dich mit dem iSCSI-Target:
 
     apt-get update
     apt-get install open-iscsi
@@ -480,11 +482,11 @@ Back on the high available cluster you'll connect to the iSCSI-Target first and 
 172.30.2.20:3260,1 iqn.cluster-ab:lun-ab
 ```
 
-Following file has been created and you will configure it to your needs
+Folgende Datei wurde erzeugt und du kannst sich für dich konfigurieren
 
     vi /etc/iscsi/nodes/iqn.cluster-ab\:lun-ab/172.30.2.20\,3260\,1/default
 
-You can change the authmethod from `none` to following.:
+Hier stellst du die Auth Methode von `none` auf folgende Einstellung:
 
     node.session.auth.authmethod = CHAP
     node.session.auth.username = stonith-iscsi-user
@@ -492,13 +494,13 @@ You can change the authmethod from `none` to following.:
     node.session.auth.username_in = stonith-iscsi-target
     node.session.auth.password_in = secretpass
 
-> Don't forget to change the password and secretpass to your configuration
+> Vergiss nicht, die Parameter 'password' und 'secretpass' auf deine Einstellungen am iSCSI-Target abzuändern.
 
-The server should connect to the iSCSI target on reboot so change `node.startup` to automatic
+Der Server soll sich mit dem iSCSI-Target nach einem Neustart automatisch verbinden.
 
     node.startup = automatic
 
-Now you can restart the service and check the iSCSI session
+Nun kannst du die iSCSI-Session neustarten
 
     service open-iscsi restart
     iscsiadm -m session
@@ -507,7 +509,7 @@ Now you can restart the service and check the iSCSI session
 tcp: [1] 172.30.2.20:3260,1 iqn.node-ac.rothirsch.tech:lun-node-ac (non-flash)
 ```
 
-Check `fdisk -l` and look if a new disk _VIRTUAL-DISK_ is present
+Überprüfe ob die Ausgabe von `fdisk -l` einen neuen Speicher namen _VIRTUAL-DISK_ anzeigt
 
 
 ```output
@@ -518,11 +520,13 @@ Sector size (logical/physical): 512 bytes / 4096 bytes
 I/O size (minimum/optimal): 4096 bytes / 4096 bytes
 ```
 
-#### Configure SBD
+Du bist jetzt mit dem iSCSI-Target verbunden.
+
+#### Konfiguriere SBD
 
     apt install sbd fence-agents
 
-You have to change a few lines inside `/etc/default/sbd` from default to this:
+Du musst ein paar Zeilen in der Datei `/etc/default/sbd` abändern:
 
     # Find iSCSI target's device with fdisk -l and add it here
     SBD_DEVICE="/dev/sda"
@@ -531,7 +535,7 @@ You have to change a few lines inside `/etc/default/sbd` from default to this:
     SBD_WATCHDOG_DEV=/dev/watchdog
 
 
-__! Restart__ both devices and on either of the two, do following afterwards:
+__! Neustarte__ beide Geräte und auf einem der beiden führst du folgende Befehle aus um die SBD Einheit zu erstellen:
 
     # Create the SBD device with timeouts for watchdog and sbd
     sbd -d /dev/sda -4 20 -1 10 create
@@ -539,14 +543,14 @@ __! Restart__ both devices and on either of the two, do following afterwards:
     # Check what was written
     sbd -d /dev/sda dump
 
-> FYI `sbd` is not a service, so you don't have to start it. This will be done by pacemaker later on
+> Zur Information `sbd` ist kein Service, du musst ihn also nicht starten. Das wird das Pacemaker später für die übernehmen. Deshalb prüfen wir hier auch noch nicht ob die Konfiguration funktioniert hat.
 <br>
-Thanks to:  
+Weiter Informationen:
 [https://kb.linbit.com/stonith-using-sbd-storage-based-death](https://kb.linbit.com/stonith-using-sbd-storage-based-death)
 <br>
 
 
-## Pacemaker, Corosync - Active/Passive high availability cluster
+## Pacemaker, Corosync - Aktiv/Passiv hochverfügbarer Cluster
 
 Install and configure everything on both nodes
 

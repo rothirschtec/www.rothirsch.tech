@@ -363,7 +363,7 @@ That's it, you've successfully configured a DRBD resource
 
 _Shoot the other node in the head [STONITH]_ is a technique that tries to prevent a state called _split brain_. This is a problem which occurs if both nodes in the cluster think, that they are the new main node. This happens when they can't see each other on the network via corosync. By using shared storage this will shred your data immediately. So each node which thinks it has to be the main node will first shoot the other node in the head, before it'll become the main node. You may think, what is if both nodes kill each other at the same time. This may be an issue but in most cases one Node is always faster and it is always better to restart both devices then to trigger a _split brain_ situation. There are multiple STONITH fencing devices. Some will sit directly inside your mainboard which you can execute over a separate ethernet connection like IPMI or you could power off the device by controlling your UPS. In the SBC cluster we can't find such devices and using some techniques won't make any sense. The bpi-m64 doesn't have such features but it provides a hardware watchdog. With it you can use a third-party node that'll serve as a iSCSI-SAN to provide node information inside a [LUN](https://www.minitool.com/lib/logical-unit-number.html). One node can write the other node that it should commit suicide. If a node loses the connection to the iSCSI-target it will also swallow the poison pill, means it will to a hard reset.
 
-> These articles provide well explained inforation about fencing, STONITH, SBD [Stonith Block Device] and timeouts:
+> These articles provide well explained information about fencing, STONITH, SBD [Stonith Block Device] and timeouts:
 <br>
 - [https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/](https://jwb-systems.com/high-availability-cluster-with-pacemaker-part-3-stonith/)
 <br>
@@ -373,7 +373,7 @@ _Shoot the other node in the head [STONITH]_ is a technique that tries to preven
 
 ### The third-party node
 
-You can set up another high available node that'll provide you with LUN information via the iSCSI protocol. For this post two bpi-m2+ are used to share the LUN. You can use the explanation above and use the eMMC storage to create a DRBD storage device. There is a post in development which will show the configuration of the bpi-m2+ as iSCSI-SAN later on. In the meantime the installation of the iSCSI-SAN will be explained here in short.
+You can set up another high available node that'll provide you with LUN information via the iSCSI protocol. For this post two bpi-m2+ are used to share the LUN. You can use the explanation above and use the eMMC storage to create a DRBD storage device. There is a post in development which will explain this set up later on. In the meantime the installation of the iSCSI-SAN will be explained here in short.
 
 #### Install tgt
 
@@ -382,13 +382,15 @@ You can set up another high available node that'll provide you with LUN informat
 
 #### Create an image file on the shared storage
 
+Das LUN benötigt nur eine Größe von 15 MB.
+
     mkdir -p /media/stonith_luns
     mount /dev/drbd0 /media/stonith_luns
     dd if=/dev/zero of=/media/stonith_luns/cluster-ab.img count=0 bs=1 seek=15M
 
 #### Configure tgt
 
-Now you can tell tgt to use this image file
+Here you can tell tgt where it finds the image and you can secure the configuration.
 
     vi /etc/tgt/conf.d/cluster-ab_iscsi.conf
 
@@ -406,7 +408,7 @@ Now you can tell tgt to use this image file
 </target>
 ```
 
-Restart the service and check if your configuration is present
+Restart the service and check if your configuration is present.
 
     systemctl restart tgt
     tgtadm --mode target --op show
@@ -462,14 +464,14 @@ Target 1: iqn.cluster-ab:lun-ab
 
 ```
 
-> Thanks to:
+> More information:
   <br>
   [https://www.tecmint.com/setup-iscsi-target-and-initiator-on-debian-9/](https://www.tecmint.com/setup-iscsi-target-and-initiator-on-debian-9/)
   <br>
   [https://www.server-world.info/en/note?os=Debian_10&p=iscsi&f=2](https://www.server-world.info/en/note?os=Debian_10&p=iscsi&f=2)
 
 
-### The HA cluster
+### The highavailable cluster
 
 Back on the high available cluster you'll connect to the iSCSI-Target first and configure the _STONITH Block Device_ next. Install `open-iscsi` and connect to the iSCSI target:
 
@@ -519,6 +521,8 @@ Sector size (logical/physical): 512 bytes / 4096 bytes
 I/O size (minimum/optimal): 4096 bytes / 4096 bytes
 ```
 
+You're now connected to the iSCSI-Target.
+
 #### Configure SBD
 
     apt install sbd fence-agents
@@ -532,7 +536,7 @@ You have to change a few lines inside `/etc/default/sbd` from default to this:
     SBD_WATCHDOG_DEV=/dev/watchdog
 
 
-__! Restart__ both devices and on either of the two, do following afterwards:
+__! Restart__ both devices and on either of the two, do following afterwards to create the SBD device:
 
     # Create the SBD device with timeouts for watchdog and sbd
     sbd -d /dev/sda -4 20 -1 10 create
@@ -542,7 +546,7 @@ __! Restart__ both devices and on either of the two, do following afterwards:
 
 > FYI `sbd` is not a service, so you don't have to start it. This will be done by pacemaker later on
 <br>
-Thanks to:  
+More information:
 [https://kb.linbit.com/stonith-using-sbd-storage-based-death](https://kb.linbit.com/stonith-using-sbd-storage-based-death)
 <br>
 
