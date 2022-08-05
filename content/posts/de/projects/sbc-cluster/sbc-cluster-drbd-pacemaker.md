@@ -22,7 +22,7 @@ robots:     index, follow
 
 # SBC Cluster: DRBD + Pacemaker (Banana Pi m64)
 
-Das Ziel dieses Beitrags ist es dir zu zeigen wie du einen hochverfügbaren Cluster mit zwei Single Board Computer konfigurierst. Der Cluster verwendet DRBD um einen Datenspeicher über das Netzwerk zu replizieren. Beide Single Board Computer (SBC) werden über einen Switch verbunden. Dadurch werden all eingehenden und ausgehenden Verbindungen und die Replikation des Datenspeichers über das selbe Subnetz laufen. Zwei weitere Werkzeuge für den Cluster sind:
+Das Ziel dieses Beitrags ist es dir zu zeigen wie du einen hochverfügbaren Cluster mit zwei Single Board Computer konfigurierst. Der Cluster verwendet DRBD um einen Datenspeicher über das Netzwerk zu replizieren. Beide Single Board Computer [SBC] werden über einen Switch verbunden. Dadurch werden all eingehenden und ausgehenden Verbindungen und die Replikation des Datenspeichers über das selbe Subnetz laufen. Zwei weitere Werkzeuge für den Cluster sind:
 
 - Pacemaker for Ressourcen-Management
 - Corosync für zuverlässige Synchronität
@@ -64,7 +64,10 @@ sudo dd if=Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img of=/dev/<you
 
 ## Partitionen vorbereiten (auf deinem PC)
 
+![Zur Veranschaulichung, zeigt dieses Bild 64GB - Klasse 10 Mikro SD Karte](content/images/posts/projects/sbc-cluster/64GB-Class10.png "64GB Klasse 10 - SD-Karte")
+
 Für diesen Cluster wird eine _64GB - Klasse 10_ SD-Karte verwendet. Deshalb kannst du eine zweite Partition erstellen, nachdem du das Image aufgespielt hast, indem du die erste Partition verkleinerst. Dafür kannst du `fdisk` verwenden.
+
 
 ![Um das zu visualisieren kannst du hier ein Bild eines Balkens mit einer 25% großen Sektion für das Betriebssystem und einer 75% großen Sektion für den geteilen Datenspeicher sehen.](content/images/posts/projects/sbc-cluster/Partitioning.svg "bpi-m64 cluster of two")
 

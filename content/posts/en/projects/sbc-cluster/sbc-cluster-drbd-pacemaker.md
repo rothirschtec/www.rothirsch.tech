@@ -22,7 +22,7 @@ robots:     index, follow
 
 # SBC cluster: DRBD, Pacemaker and corosync (Banana Pi m64)
 
-The goal of this post is to show you how to set up a high available cluster, configured with two single board computer. The cluster will use DRBD to replicate a storage system over the network. Both single board computer SBCs will be connected through a switch. So all incoming and outgoing connections and the storage replication will use the same subnet. Two other tools for the cluster are:
+The goal of this post is to show you how to set up a high available cluster, configured with two single board computer. The cluster will use DRBD to replicate a storage system over the network. Both single board computer [SBCs] will be connected through a switch. So all incoming and outgoing connections and the storage replication will use the same subnet. Two other tools for the cluster are:
 
 - Pacemaker for resource management
 - Corosync to provide good synchronicity
@@ -62,6 +62,8 @@ sudo dd if=Armbian_22.05.4_Bananapim64_bullseye_current_5.15.48.img of=/dev/<you
 > You can find further instructions about flashing Armbian to a sd card here: [https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card](https://docs.armbian.com/User-Guide_Getting-Started/#how-to-prepare-a-sd-card)
 
 ## Preparing partitions (on your PC)
+
+![To visualize, this picture shows a 64GB - Class 10 Micro sd card](content/images/posts/projects/sbc-cluster/64GB-Class10.png "64GB - Class 10 sd card")
 
 For this cluster a 64GB - Class 10 sd card is used. So after flashing the image onto it you can create a second partition by decreasing the size of the first one. For this you can use `fdisk`.
 
