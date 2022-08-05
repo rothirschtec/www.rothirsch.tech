@@ -6,7 +6,7 @@ Language:   en
 Keywords:   Banana Pi m64, Cluster, Singleboard Computer, SD Card, eMMC, Highavailability
 Authors:    René Zingerle, SSCP
 TwitterA:   r9_rtec
-Timestamp:  2022-07-23_14:12:28
+Timestamp:  2022-08-05_10:29:28
 Image:      content/images/posts/projects/sbc-cluster/Two-Clearfog-Pro-and-two-bpi-m64.jpg
 Alt:        For illustration, this image shows two bpi-m64 positioned parallel to each  other inside an 1U case.
 Index:      0
@@ -376,6 +376,9 @@ _Shoot the other node in the head [STONITH]_ is a technique that tries to preven
 ### The third-party node
 
 You can set up another high available node that'll provide you with LUN information via the iSCSI protocol. For this post two bpi-m2+ are used to share the LUN. You can use the explanation above and use the eMMC storage to create a DRBD storage device. There is a post in development which will explain this set up later on. In the meantime the installation of the iSCSI-SAN will be explained here in short.
+
+![For illustration, this image shows two bpi-m64 and bpi-m2+ positioned parallel to each other inside an 1U case](content/images/posts/projects/sbc-cluster/bpi-m2p_and_bpi-m64_Cluster.jpg "bpi-m2p and bpi-m64 cluster of two")
+
 
 #### Install tgt
 

@@ -6,7 +6,7 @@ Language:   de
 Keywords:   Banana Pi m64, Cluster, Singleboard Computer, SD Card, eMMC, Hochverfügbar
 Authors:    René Zingerle, SSCP
 TwitterA:   r9_rtec
-Timestamp:  2022-07-23_14:12:28
+Timestamp:  2022-08-05_10:29:28
 Image:      content/images/posts/projects/sbc-cluster/Two-Clearfog-Pro-and-two-bpi-m64.jpg
 Alt:        Zur Veranschaulichung, zeigt dieses Bild zwei bpi-m64 die nebeneinander  in einem 1HE Gehäuse positioniert sind.
 Index:      0
@@ -375,7 +375,10 @@ _Shoot the other node in the head [STONITH]_, also schieß der anderen Node in d
 
 ### Die dritte Node
 
+
 Du kannst einen weitern hochverfügbaren Cluster aufsetzen der LUN Informationen über das iSCSI Protokoll bereitstellt. Für diesen Beitrag werden dafür 2 bpi-m2+ verwendet um das LUN zu teilen. Du kannst die bisherige Anleituung dafür verwenden den Cluster aufzusetzen und den eMMC Speicher verwenden um den DRBD Datenspeicher zu installieren. Es wird gerade an einem Beitrag gearbeitet, der diese Installation beschreibt. Daher wird hier nur die iSCSI-Target installation beschrieben.
+
+![Zur Veranschaulichung, zeigt dieses Bild zwei bpi-m64 und zwei bpi-m2+ die nebeneinander in einem 1HE Gehäuse positioniert](content/images/posts/projects/sbc-cluster/bpi-m2p_and_bpi-m64_Cluster.jpg "bpi-m2p and bpi-m64 cluster of two")
 
 #### Installiere tgt
 
