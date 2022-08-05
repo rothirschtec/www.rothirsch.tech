@@ -22,7 +22,7 @@ robots:     index, follow
 
 # SBC cluster: DRBD, Pacemaker and corosync (Banana Pi m64)
 
-The goal of this post is to show you how to set up a high available cluster, configured with two single board computer. The cluster will use DRBD to replicate a storage system over the network. Both single board computer [SBCs] will be connected through a switch. So all incoming and outgoing connections and the storage replication will use the same subnet. Two other tools for the cluster are:
+The goal of this post is to show you how to set up a high available cluster, configured with two single board computers. The cluster will use DRBD to replicate a storage system over the network. Both single board computers [SBCs] will be connected through a switch. So all incoming and outgoing connections and the storage replication will use the same subnet. Two other tools for the cluster are:
 
 - Pacemaker for resource management
 - Corosync to provide good synchronicity
@@ -71,7 +71,7 @@ For this cluster a 64GB - Class 10 sd card is used. So after flashing the image 
 
 ### Change partitions with the tool fdisk
 
-Find your sd cards name
+Find the name of your sd card
 
     fdisk -l
 
