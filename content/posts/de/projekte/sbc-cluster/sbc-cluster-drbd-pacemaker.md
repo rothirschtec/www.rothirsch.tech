@@ -12,7 +12,7 @@ Alt:        Zur Veranschaulichung, zeigt dieses Bild zwei bpi-m64 die nebeneinan
 Index:      0
 ChangeFreq: monthly
 Priority:   0.8
-base_url:   de/blog/projects/sbc-cluster/sbc-cluster-drbd-pacemaker.html
+base_url:   de/blog/projekte/sbc-cluster/sbc-cluster-drbd-pacemaker.html
 child:      none
 parent:     none
 template:   single-post.html

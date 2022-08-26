@@ -1,18 +1,18 @@
 ---
-Title:      Install Puppet on an Armbian device via Ansible
+Title:      Installiere Puppet auf Armbian Geräten mittels Ansible
 Menuname:   Puppet via Ansible
-Summary:    An Ansible playbook for installing puppet on Armbian devices
-Language:   en
-Keywords:   automation, ansible, puppet, armbian, playbook, installation
+Summary:    Ein Ansible playbook um Puppet auf Armbian Geräten zu installieren.
+Language:   de
+Keywords:   automatisierung, ansible, puppet, armbian, playbook, installation
 Authors:    René Zingerle, SSCP
 TwitterA:   r9_rtec
 Timestamp:  2022-08-26_07:14:54
 Image:      content/images/posts/projects/sbc-automation/Install_Puppet_via_Ansible.png
-Alt:        To showcase that this guideline uses Ansible and Puppet for automation you can see arrows that form a circle. Above you can see the label Puppet and beneath the label Puppet.
+Alt:        Um zu zeigen das dieser Leitfaden Ansible und Puppet für Automatisierung verwendet kannst du Pfeile sehen die einen Kreis formen. Darüber steht Puppet und darunter Ansible.
 Index:      0
 ChangeFreq: monthly
 Priority:   0.8
-base_url:   en/blog/projects/sbc-automation/install-puppet-on-an-armbian-device-via-ansible.html
+base_url:   de/blog/projekte/sbc-automation/installiere-puppet-auf-armbian-geräten-mittels-ansible.html
 child:      none
 parent:     none
 template:   single-post.html
@@ -20,9 +20,9 @@ state:      ready
 robots:     index, follow
 ---
 
-# Install Puppet on an Armbian device via ansible
+# Installiere Puppet auf Armbian Geräten mittels Ansible
 
-Starting with automation you can use Ansible to install Puppet via SSH with this playbook.
+Starte mit Automatisierung in dem du mit diesem Ansible playbook, Puppet über SSH installierst.
 
 ## Playbook
 
@@ -134,9 +134,9 @@ Starting with automation you can use Ansible to install Puppet via SSH with this
         job: "/bin/bash /root/exec_puppet.sh 2>&1 > /dev/null"
 ```
 
-## Thanks to:
+## Ein Dank an:
 
-Some ideas and implementations on this post are inspired by following articles.
+Einige Ideen und Umsetzungen in diesem Beitrag wurden durch folgende Artikel inspiriert.
 
 - [https://linuxconfig.org/how-to-set-up-rvm-on-debian-10-buster](https://linuxconfig.org/how-to-set-up-rvm-on-debian-10-buster)
 - [https://dangibbs.uk/blog/running-puppet-7-agent-on-arm/](https://dangibbs.uk/blog/running-puppet-7-agent-on-arm/)
