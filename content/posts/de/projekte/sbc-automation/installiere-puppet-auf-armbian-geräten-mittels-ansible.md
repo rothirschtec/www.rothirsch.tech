@@ -79,11 +79,15 @@ Starte mit Automatisierung in dem du mit diesem Ansible playbook, Puppet über S
       command: "gem install puppet"
       args:
         creates: "/usr/local/rvm/gems/ruby-{{ ruby_version }}/bin/puppet"
+      environment:
+        PATH: "{{ rvm_path }}:{{ ansible_env.PATH }}"
 
     - name: Install facter
       command: "gem install facter"
       args:
         creates: "/usr/local/rvm/gems/ruby-{{ ruby_version }}/bin/facter"
+      environment:
+        PATH: "{{ rvm_path }}:{{ ansible_env.PATH }}"
 
     - name: Create puppet directory
       file:
