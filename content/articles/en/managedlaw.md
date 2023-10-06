@@ -24,7 +24,7 @@ Data protection has become a major center of attention in the recent past – is
 
 The drastic fines that can be imposed under the GDPR and the associated risks for every undertaking make it necessary to be well prepared and limit risk-exposure as far as possible.
 
-## Managed Law
+## The module
 
 With the “Managed Law” package, we offer not only a tailor-made privacy policy for your website (including the so called “cookie notice”), but will also provide the details you are legally required to include in the legal information / imprint of your internet presence. This means you don’t have to search the internet for ambiguous “templates” which might not even suit your business and could also constitute a copyright infringement.
 
