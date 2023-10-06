@@ -24,17 +24,17 @@ Data protection has become a major center of attention in the recent past – is
 
 The drastic fines that can be imposed under the GDPR and the associated risks for every undertaking make it necessary to be well prepared and limit risk-exposure as far as possible.
 
-## The module
+## The bundle
 
-With the “Managed Law” package, we offer not only a tailor-made privacy policy for your website (including the so called “cookie notice”), but will also provide the details you are legally required to include in the legal information / imprint of your internet presence. This means you don’t have to search the internet for ambiguous “templates” which might not even suit your business and could also constitute a copyright infringement.
+With the “Managed Law” bundle, we offer not only a tailor-made privacy policy for your website (including the so called “cookie notice”), but will also provide the details you are legally required to include in the legal information / imprint of your internet presence. This means you don’t have to search the internet for ambiguous “templates” which might not even suit your business and could also constitute a copyright infringement.
 
-But the “Managed Law” package does not stop there – changes in the legal framework will be monitored on a regular basis and applied to your website if necessary. This means your internet presence is always up to date – automatically and with peace of mind.
+But the “Managed Law” bundle does not stop there – changes in the legal framework will be monitored on a regular basis and applied to your website if necessary. This means your internet presence is always up to date – automatically and with peace of mind.
 
 ![A coat of arms with a fountain pen as a pattern bordered by a laurel bush. The heading is DonathLaw and under it the words Managed Law](content/images/ManagedLaw.png "Managed Law")
 <br>
 <br>
 
-Our specialized partner for the “Managed Law” package:
+Our specialized partner for the “Managed Law” bundle:
 <!-- Adresse Dr. Guido Donath -->
 <div class="row">
     <div class="col-md-7">

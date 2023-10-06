@@ -24,7 +24,7 @@ Datenschutz hat in der letzten Zeit einen immer höheren Stellenwert erlangt. Is
 
 Die enormen Geldbußen, die bei Verstößen gegen die DSGVO drohen und die damit verbundenen Risiken für jedes Unternehmen machen eine gute Vorbereitung und Risikoeinschränkung notwendig.
 
-## Das Modul
+## Das Paket
 
 Mit dem Paket "Managed Recht" bieten wir nicht nur eine auf Ihre Website angepasste Datenschutzerklärung an (einschließlich der sogenannten "cookie notice"), sondern beraten sie auch, welche Details Sie gesetzlich im Impressum Ihres Internetauftritts angeben müssen. Das bedeutet, dass Sie nicht selbst im Internet recherchieren und sich mit schwammigen "Vorlagen" auseinandersetzen müssen, die vielleicht nicht auf Ihre Firma passen und im schlimmsten Fall sogar eine Copyright-Verletzung darstellen könnten.
 
