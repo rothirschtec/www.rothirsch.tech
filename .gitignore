@@ -11,4 +11,5 @@ content/main.min.css
 content/templates/cleaned_write-up.md
 de/*
 en/*
+.venv
 sitemap.xml
